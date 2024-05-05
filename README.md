@@ -1,6 +1,6 @@
 # region_settings
 
-Flutter plugin to get device region settings.
+A Flutter plugin to get device region settings such as measurement system and temperature units.
 
 ## Platform Support
 
