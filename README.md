@@ -17,12 +17,12 @@ Call `RegionSettings` to access device region settings including temperature uni
 ```dart
 import 'package:region_settings/region_settings.dart';
 
-final regionSettings = RegionSettings();
-TemperatureUnit getTemperatureUnits = await regionSettings.getTemperatureUnits();
-bool usesMetricSystem = await regionSettings.usesMetricSystem();
+final RegionSettings regionSettings = await RegionSettings.getSettings();
+TemperatureUnit temperatureUnits = regionSettings.temperatureUnits;
+bool usesMetricSystem = regionSettings.usesMetricSystem;
 ```
 
-`getTemperatureUnits` returns an enum with the following possible values:
+`temperatureUnits` is set to an enum with the following possible values:
 | enum | value |
 |-|-|
 | TemperatureUnit.celsius | 'C' |

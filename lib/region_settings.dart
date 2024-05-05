@@ -23,11 +23,30 @@ enum TemperatureUnit {
 }
 
 class RegionSettings {
+  RegionSettings({
+    required this.temperatureUnits,
+    required this.usesMetricSystem,
+  });
+
+  final TemperatureUnit temperatureUnits;
+  final bool usesMetricSystem;
+
+  // Load all available region settings
+  static Future<RegionSettings> getSettings() async {
+    TemperatureUnit temperatureUnits = await getTemperatureUnits();
+    bool usesMetricSystem = await getUsesMetricSystem();
+
+    return RegionSettings(
+      temperatureUnits: temperatureUnits,
+      usesMetricSystem: usesMetricSystem,
+    );
+  }
+
   // Get the temperature units from device settings
-  Future<TemperatureUnit> getTemperatureUnits() async {
-    String getTemperatureUnits =
+  static Future<TemperatureUnit> getTemperatureUnits() async {
+    String temperatureUnits =
         await RegionSettingsPlatform.instance.getTemperatureUnits() ?? '';
-    if (getTemperatureUnits
+    if (temperatureUnits
         .toUpperCase()
         .startsWith(TemperatureUnit.fahrenheit.value)) {
       return TemperatureUnit.fahrenheit;
@@ -37,9 +56,18 @@ class RegionSettings {
   }
 
   // Check if device is set to use metric system
-  Future<bool> usesMetricSystem() async {
+  static Future<bool> getUsesMetricSystem() async {
     bool usesMetricSystem =
-        await RegionSettingsPlatform.instance.usesMetricSystem() ?? true;
+        await RegionSettingsPlatform.instance.getUsesMetricSystem() ?? true;
     return Future.value(usesMetricSystem);
+  }
+
+  // Output settings as a string
+  @override
+  String toString() {
+    return '''RegionSettings(
+      temperatureUnits: $temperatureUnits,
+      usesMetricSystem: $usesMetricSystem
+    )''';
   }
 }

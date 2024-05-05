@@ -22,16 +22,16 @@ class MethodChannelRegionSettings extends RegionSettingsPlatform {
   final methodChannel = const MethodChannel('region_settings');
 
   @override
-  Future<bool?> usesMetricSystem() async {
-    final usesMetricSystem =
-        await methodChannel.invokeMethod<bool?>('usesMetricSystem');
-    return usesMetricSystem;
+  Future<String?> getTemperatureUnits() async {
+    final temperatureUnits =
+        await methodChannel.invokeMethod<String>('getTemperatureUnits');
+    return temperatureUnits;
   }
 
   @override
-  Future<String?> getTemperatureUnits() async {
-    final getTemperatureUnits =
-        await methodChannel.invokeMethod<String>('getTemperatureUnits');
-    return getTemperatureUnits;
+  Future<bool?> getUsesMetricSystem() async {
+    final usesMetricSystem =
+        await methodChannel.invokeMethod<bool>('getUsesMetricSystem');
+    return usesMetricSystem;
   }
 }

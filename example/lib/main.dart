@@ -27,9 +27,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  TemperatureUnit? _getTemperatureUnits;
+  TemperatureUnit? _temperatureUnits;
   bool? _usesMetricSystem;
-  final _regionSettings = RegionSettings();
 
   @override
   void initState() {
@@ -39,9 +38,9 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> loadRegionSettings() async {
-    TemperatureUnit? getTemperatureUnits =
-        await _regionSettings.getTemperatureUnits();
-    bool? usesMetricSystem = await _regionSettings.usesMetricSystem();
+    final RegionSettings regionSettings = await RegionSettings.getSettings();
+    TemperatureUnit temperatureUnits = regionSettings.temperatureUnits;
+    bool usesMetricSystem = regionSettings.usesMetricSystem;
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -49,7 +48,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
-      _getTemperatureUnits = getTemperatureUnits;
+      _temperatureUnits = temperatureUnits;
       _usesMetricSystem = usesMetricSystem;
     });
   }
@@ -66,9 +65,9 @@ class _MyAppState extends State<MyApp> {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text('getTemperatureUnits:'),
+                const Text('temperatureUnits:'),
                 Text(
-                  '$_getTemperatureUnits',
+                  '$_temperatureUnits',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],

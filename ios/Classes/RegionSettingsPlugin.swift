@@ -24,8 +24,8 @@ public class RegionSettingsPlugin: NSObject, FlutterPlugin {
     switch call.method {
     case "getTemperatureUnits":
       result(getTemperatureUnits())
-    case "usesMetricSystem":
-      result(usesMetricSystem())
+    case "getUsesMetricSystem":
+      result(getUsesMetricSystem())
     default:
       result(FlutterMethodNotImplemented)
     }
@@ -47,7 +47,7 @@ public class RegionSettingsPlugin: NSObject, FlutterPlugin {
   }
 
   // Check if device is set to use metric system
-  private func usesMetricSystem() -> Bool {
+  private func getUsesMetricSystem() -> Bool {
     if #available(iOS 16, *) {
         return Locale.autoupdatingCurrent.measurementSystem != Locale.MeasurementSystem.us
     } else {

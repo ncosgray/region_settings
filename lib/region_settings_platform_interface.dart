@@ -38,6 +38,6 @@ abstract class RegionSettingsPlatform extends PlatformInterface {
   Future<String?> getTemperatureUnits() => throw UnimplementedError(
       'getTemperatureUnits() has not been implemented.');
 
-  Future<bool?> usesMetricSystem() =>
-      throw UnimplementedError('usesMetricSystem() has not been implemented.');
+  Future<bool?> getUsesMetricSystem() => throw UnimplementedError(
+      'getUsesMetricSystem() has not been implemented.');
 }

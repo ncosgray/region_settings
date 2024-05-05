@@ -42,8 +42,8 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
       "getTemperatureUnits" -> {
         result.success(getTemperatureUnits())
       }
-      "usesMetricSystem" -> {
-        result.success(usesMetricSystem())
+      "getUsesMetricSystem" -> {
+        result.success(getUsesMetricSystem())
       }
       else -> {
         result.notImplemented()
@@ -53,18 +53,18 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
 
   // Get the temperature units from device settings, or use locale default
   private fun getTemperatureUnits(): String {
-    var getTemperatureUnits = "C"
+    var temperatureUnits = "C"
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-      getTemperatureUnits = LocalePreferences.getTemperatureUnit()
+      temperatureUnits = LocalePreferences.getTemperatureUnit()
     }
-    else if (!usesMetricSystem()) {
-      getTemperatureUnits = "F"
+    else if (!getUsesMetricSystem()) {
+      temperatureUnits = "F"
     }
-    return getTemperatureUnits
+    return temperatureUnits
   }
 
   // Check if device locale is set to a country that uses metric system
-  private fun usesMetricSystem(): Boolean {
+  private fun getUsesMetricSystem(): Boolean {
     val locale: Locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       context.resources.configuration.locales.get(0)
     } else {
