@@ -29,6 +29,7 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   TemperatureUnit? _temperatureUnits;
   bool? _usesMetricSystem;
+  int? _firstDayOfWeek;
 
   @override
   void initState() {
@@ -41,6 +42,7 @@ class _MyAppState extends State<MyApp> {
     final RegionSettings regionSettings = await RegionSettings.getSettings();
     TemperatureUnit temperatureUnits = regionSettings.temperatureUnits;
     bool usesMetricSystem = regionSettings.usesMetricSystem;
+    int firstDayOfWeek = regionSettings.firstDayOfWeek;
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -50,6 +52,7 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _temperatureUnits = temperatureUnits;
       _usesMetricSystem = usesMetricSystem;
+      _firstDayOfWeek = firstDayOfWeek;
     });
   }
 
@@ -78,6 +81,26 @@ class _MyAppState extends State<MyApp> {
                 const Text('usesMetricSystem:'),
                 Text(
                   '$_usesMetricSystem',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('firstDayOfWeek:'),
+                Text(
+                  '$_firstDayOfWeek',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ],
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                const Text('firstDayOfWeek is Monday:'),
+                Text(
+                  '${_firstDayOfWeek == DateTime.monday}',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
