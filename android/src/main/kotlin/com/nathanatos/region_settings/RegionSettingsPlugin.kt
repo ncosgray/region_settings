@@ -45,6 +45,9 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
       "getUsesMetricSystem" -> {
         result.success(getUsesMetricSystem())
       }
+      "getFirstDayOfWeek" -> {
+        result.success(getFirstDayOfWeek())
+      }
       else -> {
         result.notImplemented()
       }
@@ -63,15 +66,19 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
     return temperatureUnits
   }
 
-  // Check if device locale is set to a country that uses metric system
-  private fun getUsesMetricSystem(): Boolean {
+  // Get the device locale
+  private fun getLocale(): Locale {
     val locale: Locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
       context.resources.configuration.locales.get(0)
     } else {
       context.resources.configuration.locale
     }
+    return locale
+  }
 
-    val countryCode: String = locale.country
+  // Check if device locale is set to a country that uses metric system
+  private fun getUsesMetricSystem(): Boolean {
+    val countryCode: String = getLocale().country
     var usesMetricSystem = true
     when (countryCode) {
       "AS" -> usesMetricSystem = false // American Samoa (US)
@@ -90,6 +97,100 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
       "VI" -> usesMetricSystem = false // US Virgin Islands
     }
     return usesMetricSystem
+  }
+
+  // Get the first day of the week from device settings
+  private fun getFirstDayOfWeek(): String {
+    var firstDayOfWeek = ""
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+      firstDayOfWeek = LocalePreferences.getFirstDayOfWeek()
+    }
+    if (firstDayOfWeek == "") {
+      // Use locale to determine first day of the week
+      val locale: Locale = getLocale()
+      if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        firstDayOfWeek = LocalePreferences.getFirstDayOfWeek(locale)
+      }
+      else {
+        val countryCode: String = locale.country
+        firstDayOfWeek = "MON"
+        when (countryCode) {
+          "MV" -> firstDayOfWeek = "FRI" // Maldives
+          "AE" -> firstDayOfWeek = "SAT" // United Arab Emirates
+          "AF" -> firstDayOfWeek = "SAT" // Afghanistan
+          "BH" -> firstDayOfWeek = "SAT" // Bahrain
+          "DJ" -> firstDayOfWeek = "SAT" // Djibouti
+          "DZ" -> firstDayOfWeek = "SAT" // Algeria
+          "EG" -> firstDayOfWeek = "SAT" // Egypt
+          "IQ" -> firstDayOfWeek = "SAT" // Iraq
+          "IR" -> firstDayOfWeek = "SAT" // Iran
+          "JO" -> firstDayOfWeek = "SAT" // Jordan
+          "KW" -> firstDayOfWeek = "SAT" // Kuwait
+          "LY" -> firstDayOfWeek = "SAT" // Libya
+          "OM" -> firstDayOfWeek = "SAT" // Oman
+          "QA" -> firstDayOfWeek = "SAT" // Qatar
+          "SD" -> firstDayOfWeek = "SAT" // Sudan
+          "SY" -> firstDayOfWeek = "SAT" // Syria
+          "AG" -> firstDayOfWeek = "SUN" // Antigua and Barbuda
+          "AS" -> firstDayOfWeek = "SUN" // American Samoa (US)
+          "AU" -> firstDayOfWeek = "SUN" // Australia
+          "BD" -> firstDayOfWeek = "SUN" // Bangladesh
+          "BR" -> firstDayOfWeek = "SUN" // Brazil
+          "BS" -> firstDayOfWeek = "SUN" // Bahamas
+          "BT" -> firstDayOfWeek = "SUN" // Bhutan
+          "BW" -> firstDayOfWeek = "SUN" // Botswana
+          "BZ" -> firstDayOfWeek = "SUN" // Belize
+          "CA" -> firstDayOfWeek = "SUN" // Canada
+          "CN" -> firstDayOfWeek = "SUN" // China
+          "CO" -> firstDayOfWeek = "SUN" // Colombia
+          "DM" -> firstDayOfWeek = "SUN" // Dominica
+          "DO" -> firstDayOfWeek = "SUN" // Dominican Republic
+          "ET" -> firstDayOfWeek = "SUN" // Ethiopia
+          "GT" -> firstDayOfWeek = "SUN" // Guatemala
+          "GU" -> firstDayOfWeek = "SUN" // Guam (US)
+          "HK" -> firstDayOfWeek = "SUN" // Hong Kong
+          "HN" -> firstDayOfWeek = "SUN" // Honduras
+          "ID" -> firstDayOfWeek = "SUN" // Indonesia
+          "IL" -> firstDayOfWeek = "SUN" // Israel
+          "IN" -> firstDayOfWeek = "SUN" // India
+          "JM" -> firstDayOfWeek = "SUN" // Jamaica
+          "JP" -> firstDayOfWeek = "SUN" // Japan
+          "KE" -> firstDayOfWeek = "SUN" // Kenya
+          "KH" -> firstDayOfWeek = "SUN" // Cambodia
+          "KR" -> firstDayOfWeek = "SUN" // South Korea
+          "LA" -> firstDayOfWeek = "SUN" // Laos
+          "MH" -> firstDayOfWeek = "SUN" // Marshall Islands
+          "MM" -> firstDayOfWeek = "SUN" // Myanmar
+          "MO" -> firstDayOfWeek = "SUN" // Macau
+          "MT" -> firstDayOfWeek = "SUN" // Malta
+          "MX" -> firstDayOfWeek = "SUN" // Mexico
+          "MZ" -> firstDayOfWeek = "SUN" // Mozambique
+          "NI" -> firstDayOfWeek = "SUN" // Nicaragua
+          "NP" -> firstDayOfWeek = "SUN" // Nepal
+          "PA" -> firstDayOfWeek = "SUN" // Panama
+          "PE" -> firstDayOfWeek = "SUN" // Peru
+          "PH" -> firstDayOfWeek = "SUN" // Philippines
+          "PK" -> firstDayOfWeek = "SUN" // Pakistan
+          "PR" -> firstDayOfWeek = "SUN" // Puerto Rico
+          "PT" -> firstDayOfWeek = "SUN" // Portugal
+          "PY" -> firstDayOfWeek = "SUN" // Paraguay
+          "SA" -> firstDayOfWeek = "SUN" // Saudi Arabia
+          "SG" -> firstDayOfWeek = "SUN" // Singapore
+          "SV" -> firstDayOfWeek = "SUN" // El Salvador
+          "TH" -> firstDayOfWeek = "SUN" // Thailand
+          "TT" -> firstDayOfWeek = "SUN" // Trinidad and Tobago
+          "TW" -> firstDayOfWeek = "SUN" // Taiwan
+          "UM" -> firstDayOfWeek = "SUN" // US Minor Outlying Islands
+          "US" -> firstDayOfWeek = "SUN" // United States
+          "VE" -> firstDayOfWeek = "SUN" // Venezuela
+          "VI" -> firstDayOfWeek = "SUN" // US Virgin Islands
+          "WS" -> firstDayOfWeek = "SUN" // Samoa
+          "YE" -> firstDayOfWeek = "SUN" // Yemen
+          "ZA" -> firstDayOfWeek = "SUN" // South Africa
+          "ZW" -> firstDayOfWeek = "SUN" // Zimbabwe
+      }
+    }
+    return firstDayOfWeek
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {

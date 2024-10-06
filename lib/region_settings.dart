@@ -26,19 +26,23 @@ class RegionSettings {
   RegionSettings({
     required this.temperatureUnits,
     required this.usesMetricSystem,
+    required this.firstDayOfWeek,
   });
 
   final TemperatureUnit temperatureUnits;
   final bool usesMetricSystem;
+  final int firstDayOfWeek;
 
   // Load all available region settings
   static Future<RegionSettings> getSettings() async {
     TemperatureUnit temperatureUnits = await getTemperatureUnits();
     bool usesMetricSystem = await getUsesMetricSystem();
+    int firstDayOfWeek = await getFirstDayOfWeek();
 
     return RegionSettings(
       temperatureUnits: temperatureUnits,
       usesMetricSystem: usesMetricSystem,
+      firstDayOfWeek: firstDayOfWeek,
     );
   }
 
@@ -62,12 +66,35 @@ class RegionSettings {
     return Future.value(usesMetricSystem);
   }
 
+  // Get the first day of the week from device settings
+  static Future<int> getFirstDayOfWeek() async {
+    String firstDayOfWeek =
+        await RegionSettingsPlatform.instance.getFirstDayOfWeek() ?? '';
+    switch (firstDayOfWeek.toUpperCase().substring(0, 2)) {
+      case 'TU':
+        return DateTime.tuesday;
+      case 'WE':
+        return DateTime.wednesday;
+      case 'TH':
+        return DateTime.thursday;
+      case 'FR':
+        return DateTime.friday;
+      case 'SA':
+        return DateTime.saturday;
+      case 'SU':
+        return DateTime.sunday;
+      default:
+        return DateTime.monday;
+    }
+  }
+
   // Output settings as a string
   @override
   String toString() {
     return '''RegionSettings(
       temperatureUnits: $temperatureUnits,
-      usesMetricSystem: $usesMetricSystem
+      usesMetricSystem: $usesMetricSystem,
+      firstDayOfWeek: $firstDayOfWeek
     )''';
   }
 }
