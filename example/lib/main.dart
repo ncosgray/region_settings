@@ -11,6 +11,9 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/find_locale.dart';
+import 'package:intl/intl.dart';
 import 'dart:async';
 
 import 'package:region_settings/region_settings.dart';
@@ -29,6 +32,10 @@ class MyApp extends StatefulWidget {
 class _MyAppState extends State<MyApp> {
   TemperatureUnit? _temperatureUnits;
   bool? _usesMetricSystem;
+  int? _firstDayOfWeek;
+  String? _dateFormatShort;
+  String? _dateFormatMedium;
+  String? _dateFormatLong;
 
   @override
   void initState() {
@@ -41,6 +48,14 @@ class _MyAppState extends State<MyApp> {
     final RegionSettings regionSettings = await RegionSettings.getSettings();
     TemperatureUnit temperatureUnits = regionSettings.temperatureUnits;
     bool usesMetricSystem = regionSettings.usesMetricSystem;
+    int firstDayOfWeek = regionSettings.firstDayOfWeek;
+    String dateFormatShort = regionSettings.dateFormat.short;
+    String dateFormatMedium = regionSettings.dateFormat.medium;
+    String dateFormatLong = regionSettings.dateFormat.long;
+
+    // Get default locale for DateFormat
+    await initializeDateFormatting();
+    Intl.defaultLocale = await findSystemLocale();
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -50,6 +65,10 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       _temperatureUnits = temperatureUnits;
       _usesMetricSystem = usesMetricSystem;
+      _firstDayOfWeek = firstDayOfWeek;
+      _dateFormatShort = dateFormatShort;
+      _dateFormatMedium = dateFormatMedium;
+      _dateFormatLong = dateFormatLong;
     });
   }
 
@@ -60,33 +79,76 @@ class _MyAppState extends State<MyApp> {
         appBar: AppBar(
           title: const Text('RegionSettings example app'),
         ),
-        body: Center(
-          child: Column(children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('temperatureUnits:'),
-                Text(
-                  '$_temperatureUnits',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
+        body: SingleChildScrollView(
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: GridView.count(
+                  physics: const ScrollPhysics(),
+                  crossAxisCount: 2,
+                  childAspectRatio: 4.0,
+                  shrinkWrap: true,
+                  children: [
+                    const Text('temperatureUnits:'),
+                    Text(
+                      '$_temperatureUnits',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('usesMetricSystem:'),
+                    Text(
+                      '$_usesMetricSystem',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('firstDayOfWeek:'),
+                    Text(
+                      '$_firstDayOfWeek',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('firstDayOfWeek is Monday:'),
+                    Text(
+                      '${_firstDayOfWeek == DateTime.monday}',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('dateFormat.short:'),
+                    Text(
+                      '$_dateFormatShort',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('Today as dateFormat.short:'),
+                    Text(
+                      DateFormat(_dateFormatShort).format(DateTime.now()),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('dateFormat.medium:'),
+                    Text(
+                      '$_dateFormatMedium',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('Today as dateFormat.medium:'),
+                    Text(
+                      DateFormat(_dateFormatMedium).format(DateTime.now()),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('dateFormat.long:'),
+                    Text(
+                      '$_dateFormatLong',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('Today as dateFormat.long:'),
+                    Text(
+                      DateFormat(_dateFormatLong).format(DateTime.now()),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                const Text('usesMetricSystem:'),
-                Text(
-                  '$_usesMetricSystem',
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ],
-            ),
-            FilledButton.tonal(
-              onPressed: () => loadRegionSettings(),
-              child: const Text('Reload Values'),
-            )
-          ]),
+              ),
+              FilledButton.tonal(
+                onPressed: () => loadRegionSettings(),
+                child: const Text('Reload Values'),
+              )
+            ],
+          ),
         ),
       ),
     );

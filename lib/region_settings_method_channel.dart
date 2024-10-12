@@ -34,4 +34,18 @@ class MethodChannelRegionSettings extends RegionSettingsPlatform {
         await methodChannel.invokeMethod<bool>('getUsesMetricSystem');
     return usesMetricSystem;
   }
+
+  @override
+  Future<String?> getFirstDayOfWeek() async {
+    final firstDayOfWeek =
+        await methodChannel.invokeMethod<String>('getFirstDayOfWeek');
+    return firstDayOfWeek;
+  }
+
+  @override
+  Future<List<String>?> getDateFormatsList() async {
+    final dateFormatsList =
+        await methodChannel.invokeListMethod<String>('getDateFormatsList');
+    return dateFormatsList;
+  }
 }
