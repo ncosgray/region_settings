@@ -202,7 +202,7 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
 
   // Get the date formats from device settings, or use generic default
   private fun getDateFormatsList(): MutableList<String> {
-    val dateFormatsList = mutableListOf("yyyy-MM-dd", "yyyy-MM-dd", "yyyy-MM-dd")
+    val dateFormatsList = mutableListOf("yyyy-MM-dd", "dd MMM yyyy", "dd MMMM yyyy")
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
       dateFormatsList[0] = DateTimeFormatterBuilder.getLocalizedDateTimePattern(
         FormatStyle.SHORT,
