@@ -20,6 +20,11 @@ enum TemperatureUnit {
   final String value;
 
   const TemperatureUnit(this.value);
+
+  @override
+  String toString() {
+    return 'TemperatureUnit.$name';
+  }
 }
 
 // Date format options class
@@ -33,6 +38,15 @@ class RegionDateFormats {
   final String short;
   final String medium;
   final String long;
+
+  @override
+  String toString() {
+    return '''RegionDateFormats(
+      short: '$short',
+      medium: '$medium',
+      long: '$long',
+    )''';
+  }
 }
 
 class RegionSettings {
@@ -124,7 +138,7 @@ class RegionSettings {
       temperatureUnits: $temperatureUnits,
       usesMetricSystem: $usesMetricSystem,
       firstDayOfWeek: $firstDayOfWeek,
-      dateFormats: $dateFormat,
+      dateFormat: $dateFormat,
     )''';
   }
 }
