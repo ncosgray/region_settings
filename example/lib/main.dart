@@ -11,6 +11,8 @@
 */
 
 import 'package:flutter/material.dart';
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/find_locale.dart';
 import 'package:intl/intl.dart';
 import 'dart:async';
 
@@ -51,6 +53,10 @@ class _MyAppState extends State<MyApp> {
     String dateFormatMedium = regionSettings.dateFormat.medium;
     String dateFormatLong = regionSettings.dateFormat.long;
 
+    // Get default locale for DateFormat
+    await initializeDateFormatting();
+    Intl.defaultLocale = await findSystemLocale();
+
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
     // setState to update our non-existent appearance.
@@ -79,6 +85,7 @@ class _MyAppState extends State<MyApp> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: GridView.count(
+                  physics: const ScrollPhysics(),
                   crossAxisCount: 2,
                   childAspectRatio: 4.0,
                   shrinkWrap: true,
