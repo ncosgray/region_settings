@@ -1,6 +1,6 @@
 # region_settings
 
-A Flutter plugin to get device region settings such as measurement system and temperature units.
+A Flutter plugin to get device region settings such as measurement system, temperature units, and date formats.
 
 ## Platform Support
 
@@ -12,7 +12,7 @@ A Flutter plugin to get device region settings such as measurement system and te
 
 To use this plugin, add `region_settings` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
 
-Call `RegionSettings` to access device region settings including temperature unit and measurement system preferences:
+Call `RegionSettings` to access device region settings including temperature unit, measurement system, and date format preferences:
 
 ```dart
 import 'package:region_settings/region_settings.dart';
@@ -34,7 +34,7 @@ String dateFormatLong = regionSettings.dateFormat.long;
 
 `firstDayOfWeek` is an integer in the range 1..7, where 1 is Monday and 7 is Sunday. This value corresponds to the dart:core [DateTime weekday](https://api.dart.dev/stable/3.5.3/dart-core/DateTime/weekday.html) property, and can be compared to constants such as DateTime.monday, as demonstrated in the [example app](https://pub.dev/packages/region_settings/example).
 
-The three `dateFormat` values are the date formatting patterns used by the device's locale and/or region settings. For example, the UK English short date format is typically 'dd/MM/y', while US English uses 'MM/dd/y'. Pass the date format pattern to a function like [intl](https://pub.dev/packages/intl) DateFormat to use this in a Flutter app.
+The three `dateFormat` values are the date formatting patterns used by the device's locale and/or region settings. For example, the UK English short date format is typically 'dd/MM/y', while US English uses 'MM/dd/y'. Pass the date format pattern to a function like [intl DateFormat](https://pub.dev/packages/intl) to use this in a Flutter app.
 
 ## iOS Implementation
 
@@ -85,7 +85,7 @@ Android 14 and later add a First Day of Week preference to Regional Preferences.
 
 #### Date Format
 
-Android date formats are based on the device's locale. However, fetching the date format pattern is only possible in API 26 (Oreo) and later. The plugin will do this on supported versions of Android. On older versions of Android, the plugin falls back to a standard pattern that should be recognizable worldwide: 'yyyy-MM-dd'.
+Android date formats are based on the device's locale. However, fetching the date format pattern is only possible in API 26 (Oreo) and later. The plugin will do this on supported versions of Android. On older versions of Android, the plugin falls back to standard patterns that should be recognizable worldwide, such as 'yyyy-MM-dd' for the short date.
 
 ## Table of First Day of Week by Country
 
