@@ -21,6 +21,9 @@ final RegionSettings regionSettings = await RegionSettings.getSettings();
 TemperatureUnit temperatureUnits = regionSettings.temperatureUnits;
 bool usesMetricSystem = regionSettings.usesMetricSystem;
 int firstDayOfWeek = regionSettings.firstDayOfWeek;
+String dateFormatShort = regionSettings.dateFormat.short;
+String dateFormatMedium = regionSettings.dateFormat.medium;
+String dateFormatLong = regionSettings.dateFormat.long;
 ```
 
 `temperatureUnits` is set to an enum with the following possible values:
@@ -30,6 +33,8 @@ int firstDayOfWeek = regionSettings.firstDayOfWeek;
 | TemperatureUnit.fahrenheit | 'F' |
 
 `firstDayOfWeek` is an integer in the range 1..7, where 1 is Monday and 7 is Sunday. This value corresponds to the dart:core [DateTime weekday](https://api.dart.dev/stable/3.5.3/dart-core/DateTime/weekday.html) property, and can be compared to constants such as DateTime.monday, as demonstrated in the [example app](https://pub.dev/packages/region_settings/example).
+
+The three `dateFormat` values are the date formatting patterns used by the device's locale and/or region settings. For example, the UK English short date format is typically 'dd/MM/y', while US English uses 'MM/dd/y'. Pass the date format pattern to a function like [intl](https://pub.dev/packages/intl) DateFormat to use this in a Flutter app.
 
 ## iOS Implementation
 
@@ -42,6 +47,9 @@ Note that the Temperature preference is not always honored when running on iOS s
 #### First Day of Week
 
 iOS 16 and later add a First Day of Week preference to Language & Region. iOS allows selecting any of day of the week. To surface the user's first day of week preference, the First Day of Week setting is used by this plugin, if available. On older versions of iOS that lack this setting, the plugin falls back to assuming the first day of week based on the device's locale. See **Table of First Day of Week by Country** below.
+
+#### Date Format
+The plugin gets date format patterns from iOS. On older versions of iOS, the date format pattern depends on the device's language setting. iOS 16 and later add a Date Format preference to Language & Region, which allows the user to change the date format independently of the language's default date format, including even the separator character.
 
 ## Android Implementation
 
@@ -74,6 +82,10 @@ Android 14 and later include a separate Temperature preference in Regional Prefe
 #### First Day of Week
 
 Android 14 and later add a First Day of Week preference to Regional Preferences. Android allows selecting any of day of the week. To surface the user's first day of week preference, the First Day of Week setting is used by this plugin, if available. On older versions of Android that lack this setting, the plugin falls back to assuming the first day of week based on the device's locale. See **Table of First Day of Week by Country** below.
+
+#### Date Format
+
+Android date formats are based on the device's locale. However, fetching the date format pattern is only possible in API 26 (Oreo) and later. The plugin will do this on supported versions of Android. On older versions of Android, the plugin falls back to a standard pattern that should be recognizable worldwide: 'yyyy-MM-dd'.
 
 ## Table of First Day of Week by Country
 

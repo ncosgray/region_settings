@@ -43,4 +43,7 @@ abstract class RegionSettingsPlatform extends PlatformInterface {
 
   Future<String?> getFirstDayOfWeek() =>
       throw UnimplementedError('getFirstDayOfWeek() has not been implemented.');
+
+  Future<List<String>?> getDateFormatsList() => throw UnimplementedError(
+      'getDateFormatsList() has not been implemented.');
 }

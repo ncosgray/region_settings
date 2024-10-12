@@ -20,6 +20,9 @@ import io.flutter.plugin.common.MethodCall
 import io.flutter.plugin.common.MethodChannel
 import io.flutter.plugin.common.MethodChannel.MethodCallHandler
 import io.flutter.plugin.common.MethodChannel.Result
+import java.time.chrono.IsoChronology
+import java.time.format.DateTimeFormatterBuilder
+import java.time.format.FormatStyle
 import java.util.Locale
 
 /** RegionSettingsPlugin */
@@ -47,6 +50,9 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
       }
       "getFirstDayOfWeek" -> {
         result.success(getFirstDayOfWeek())
+      }
+      "getDateFormatsList" -> {
+        result.success(getDateFormatsList())
       }
       else -> {
         result.notImplemented()
@@ -188,9 +194,33 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
           "YE" -> firstDayOfWeek = "SUN" // Yemen
           "ZA" -> firstDayOfWeek = "SUN" // South Africa
           "ZW" -> firstDayOfWeek = "SUN" // Zimbabwe
+        }
       }
     }
     return firstDayOfWeek
+  }
+
+  // Get the date formats from device settings, or use generic default
+  private fun getDateFormatsList(): MutableList<String> {
+    val dateFormatsList = mutableListOf("yyyy-MM-dd", "yyyy-MM-dd", "yyyy-MM-dd")
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      dateFormatsList[0] = DateTimeFormatterBuilder.getLocalizedDateTimePattern(
+        FormatStyle.SHORT,
+        null,
+        IsoChronology.INSTANCE,
+        getLocale())
+      dateFormatsList[1] = DateTimeFormatterBuilder.getLocalizedDateTimePattern(
+        FormatStyle.MEDIUM,
+        null,
+        IsoChronology.INSTANCE,
+        getLocale())
+      dateFormatsList[2] = DateTimeFormatterBuilder.getLocalizedDateTimePattern(
+        FormatStyle.LONG,
+        null,
+        IsoChronology.INSTANCE,
+        getLocale())
+    }
+    return dateFormatsList
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {

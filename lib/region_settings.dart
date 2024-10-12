@@ -22,27 +22,48 @@ enum TemperatureUnit {
   const TemperatureUnit(this.value);
 }
 
+// Date format options class
+class RegionDateFormats {
+  RegionDateFormats({
+    required this.short,
+    required this.medium,
+    required this.long,
+  });
+
+  final String short;
+  final String medium;
+  final String long;
+}
+
 class RegionSettings {
   RegionSettings({
     required this.temperatureUnits,
     required this.usesMetricSystem,
     required this.firstDayOfWeek,
+    required this.dateFormat,
   });
 
   final TemperatureUnit temperatureUnits;
   final bool usesMetricSystem;
   final int firstDayOfWeek;
+  final RegionDateFormats dateFormat;
 
   // Load all available region settings
   static Future<RegionSettings> getSettings() async {
     TemperatureUnit temperatureUnits = await getTemperatureUnits();
     bool usesMetricSystem = await getUsesMetricSystem();
     int firstDayOfWeek = await getFirstDayOfWeek();
+    List<String> dateFormatsList = await getDateFormatsList();
 
     return RegionSettings(
       temperatureUnits: temperatureUnits,
       usesMetricSystem: usesMetricSystem,
       firstDayOfWeek: firstDayOfWeek,
+      dateFormat: RegionDateFormats(
+        short: dateFormatsList[0],
+        medium: dateFormatsList[1],
+        long: dateFormatsList[2],
+      ),
     );
   }
 
@@ -88,13 +109,22 @@ class RegionSettings {
     }
   }
 
+  // Get the date formats from device settings
+  static Future<List<String>> getDateFormatsList() async {
+    List<String> dateFormatsList =
+        await RegionSettingsPlatform.instance.getDateFormatsList() ??
+            ['', '', ''];
+    return Future.value(dateFormatsList);
+  }
+
   // Output settings as a string
   @override
   String toString() {
     return '''RegionSettings(
       temperatureUnits: $temperatureUnits,
       usesMetricSystem: $usesMetricSystem,
-      firstDayOfWeek: $firstDayOfWeek
+      firstDayOfWeek: $firstDayOfWeek,
+      dateFormats: $dateFormat,
     )''';
   }
 }

@@ -21,15 +21,17 @@ public class RegionSettingsPlugin: NSObject, FlutterPlugin {
   }
 
   public func handle(_ call: FlutterMethodCall, result: @escaping FlutterResult) {
-    switch call.method {
-    case "getTemperatureUnits":
-      result(getTemperatureUnits())
-    case "getUsesMetricSystem":
-      result(getUsesMetricSystem())
-    case "getFirstDayOfWeek":
-      result(getFirstDayOfWeek())
-    default:
-      result(FlutterMethodNotImplemented)
+    switch (call.method) {
+      case "getTemperatureUnits":
+        result(getTemperatureUnits())
+      case "getUsesMetricSystem":
+        result(getUsesMetricSystem())
+      case "getFirstDayOfWeek":
+        result(getFirstDayOfWeek())
+      case "getDateFormatsList":
+        result(getDateFormatsList())
+      default:
+        result(FlutterMethodNotImplemented)
     }
   }
 
@@ -145,5 +147,19 @@ public class RegionSettingsPlugin: NSObject, FlutterPlugin {
           return "MON"
       }
     }
+  }
+
+  // Get the date formats from device settings
+  private func getDateFormatsList() -> [String] {
+    var dateFormatsList: [String] = []
+    let formatter = DateFormatter()
+    formatter.timeStyle = .none
+    formatter.dateStyle = DateFormatter.Style.short
+    dateFormatsList.append(formatter.dateFormat)
+    formatter.dateStyle = DateFormatter.Style.medium
+    dateFormatsList.append(formatter.dateFormat)
+    formatter.dateStyle = DateFormatter.Style.long
+    dateFormatsList.append(formatter.dateFormat)
+    return dateFormatsList
   }
 }
