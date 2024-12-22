@@ -23,6 +23,7 @@ import io.flutter.plugin.common.MethodChannel.Result
 import java.time.chrono.IsoChronology
 import java.time.format.DateTimeFormatterBuilder
 import java.time.format.FormatStyle
+import java.text.NumberFormat
 import java.util.Locale
 
 /** RegionSettingsPlugin */
@@ -53,6 +54,9 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
       }
       "getDateFormatsList" -> {
         result.success(getDateFormatsList())
+      }
+      "getNumberFormatsList" -> {
+        result.success(getNumberFormatsList())
       }
       else -> {
         result.notImplemented()
@@ -221,6 +225,25 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
         getLocale())
     }
     return dateFormatsList
+  }
+
+  // Convert 1s to #s for format pattern
+  private fun convertNumberToFormat(str: String): String {
+    return str.replace("1", "#")
+  }
+
+  // Get the number formats from device settings
+  private fun getNumberFormatsList(): MutableList<String> {
+    val testNumber: Double = 1111111.11
+    var numberFormatsList: MutableList<String> = mutableListOf()
+    val formatter: NumberFormat = NumberFormat.getInstance()
+    formatter.setMinimumFractionDigits(0)
+    formatter.setMaximumFractionDigits(0)
+    numberFormatsList.add(convertNumberToFormat(formatter.format(testNumber)))
+    formatter.setMinimumFractionDigits(2)
+    formatter.setMaximumFractionDigits(2)
+    numberFormatsList.add(convertNumberToFormat(formatter.format(testNumber)))
+    return numberFormatsList
   }
 
   override fun onDetachedFromEngine(binding: FlutterPlugin.FlutterPluginBinding) {

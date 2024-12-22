@@ -46,4 +46,7 @@ abstract class RegionSettingsPlatform extends PlatformInterface {
 
   Future<List<String>?> getDateFormatsList() => throw UnimplementedError(
       'getDateFormatsList() has not been implemented.');
+
+  Future<List<String>?> getNumberFormatsList() => throw UnimplementedError(
+      'getNumberFormatsList() has not been implemented.');
 }

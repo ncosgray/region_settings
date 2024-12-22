@@ -49,18 +49,39 @@ class RegionDateFormats {
   }
 }
 
+// Number format options class
+class RegionNumberFormats {
+  RegionNumberFormats({
+    required this.integer,
+    required this.decimal,
+  });
+
+  final String integer;
+  final String decimal;
+
+  @override
+  String toString() {
+    return '''RegionNumberFormats(
+      integer: '$integer',
+      decimal: '$decimal',
+    )''';
+  }
+}
+
 class RegionSettings {
   RegionSettings({
     required this.temperatureUnits,
     required this.usesMetricSystem,
     required this.firstDayOfWeek,
     required this.dateFormat,
+    required this.numberFormat,
   });
 
   final TemperatureUnit temperatureUnits;
   final bool usesMetricSystem;
   final int firstDayOfWeek;
   final RegionDateFormats dateFormat;
+  final RegionNumberFormats numberFormat;
 
   // Load all available region settings
   static Future<RegionSettings> getSettings() async {
@@ -68,6 +89,7 @@ class RegionSettings {
     bool usesMetricSystem = await getUsesMetricSystem();
     int firstDayOfWeek = await getFirstDayOfWeek();
     List<String> dateFormatsList = await getDateFormatsList();
+    List<String> numberFormatsList = await getNumberFormatsList();
 
     return RegionSettings(
       temperatureUnits: temperatureUnits,
@@ -77,6 +99,10 @@ class RegionSettings {
         short: dateFormatsList[0],
         medium: dateFormatsList[1],
         long: dateFormatsList[2],
+      ),
+      numberFormat: RegionNumberFormats(
+        integer: numberFormatsList[0],
+        decimal: numberFormatsList[1],
       ),
     );
   }
@@ -131,6 +157,14 @@ class RegionSettings {
     return Future.value(dateFormatsList);
   }
 
+  // Get the number formats from device settings
+  static Future<List<String>> getNumberFormatsList() async {
+    List<String> numberFormatsList =
+        await RegionSettingsPlatform.instance.getNumberFormatsList() ??
+            ['', '', ''];
+    return Future.value(numberFormatsList);
+  }
+
   // Output settings as a string
   @override
   String toString() {
@@ -139,6 +173,7 @@ class RegionSettings {
       usesMetricSystem: $usesMetricSystem,
       firstDayOfWeek: $firstDayOfWeek,
       dateFormat: $dateFormat,
+      numberFormat: $numberFormat,
     )''';
   }
 }

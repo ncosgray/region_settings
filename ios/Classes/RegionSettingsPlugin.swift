@@ -30,6 +30,8 @@ public class RegionSettingsPlugin: NSObject, FlutterPlugin {
         result(getFirstDayOfWeek())
       case "getDateFormatsList":
         result(getDateFormatsList())
+      case "getNumberFormatsList":
+        result(getNumberFormatsList())
       default:
         result(FlutterMethodNotImplemented)
     }
@@ -161,5 +163,26 @@ public class RegionSettingsPlugin: NSObject, FlutterPlugin {
     formatter.dateStyle = DateFormatter.Style.long
     dateFormatsList.append(formatter.dateFormat)
     return dateFormatsList
+  }
+
+  // Convert 1s to #s for format pattern
+  private func convertNumberToFormat(str: String?) -> String {
+    return (str ?? "1").replacingOccurrences(of: "1", with: "#")
+  }
+
+  // Get the number formats from device settings
+  private func getNumberFormatsList() -> [String] {
+    let testNumber = NSNumber(value: 1111111.11)
+    var numberFormatsList: [String] = []
+    let formatter = NumberFormatter()
+    formatter.locale = Locale.autoupdatingCurrent
+    formatter.numberStyle  = .decimal
+    formatter.minimumFractionDigits = 0
+    formatter.maximumFractionDigits = 0
+    numberFormatsList.append(convertNumberToFormat(str: formatter.string(from: testNumber)))
+    formatter.minimumFractionDigits = 2
+    formatter.maximumFractionDigits = 2
+    numberFormatsList.append(convertNumberToFormat(str: formatter.string(from: testNumber)))
+    return numberFormatsList
   }
 }

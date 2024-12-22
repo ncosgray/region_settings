@@ -48,4 +48,11 @@ class MethodChannelRegionSettings extends RegionSettingsPlatform {
         await methodChannel.invokeListMethod<String>('getDateFormatsList');
     return dateFormatsList;
   }
+
+  @override
+  Future<List<String>?> getNumberFormatsList() async {
+    final numberFormatsList =
+        await methodChannel.invokeListMethod<String>('getNumberFormatsList');
+    return numberFormatsList;
+  }
 }

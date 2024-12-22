@@ -36,6 +36,8 @@ class _MyAppState extends State<MyApp> {
   String? _dateFormatShort;
   String? _dateFormatMedium;
   String? _dateFormatLong;
+  String? _numberFormatInteger;
+  String? _numberFormatDecimal;
 
   @override
   void initState() {
@@ -52,6 +54,8 @@ class _MyAppState extends State<MyApp> {
     String dateFormatShort = regionSettings.dateFormat.short;
     String dateFormatMedium = regionSettings.dateFormat.medium;
     String dateFormatLong = regionSettings.dateFormat.long;
+    String numberFormatInteger = regionSettings.numberFormat.integer;
+    String numberFormatDecimal = regionSettings.numberFormat.decimal;
 
     // Get default locale for DateFormat
     await initializeDateFormatting();
@@ -69,6 +73,8 @@ class _MyAppState extends State<MyApp> {
       _dateFormatShort = dateFormatShort;
       _dateFormatMedium = dateFormatMedium;
       _dateFormatLong = dateFormatLong;
+      _numberFormatInteger = numberFormatInteger;
+      _numberFormatDecimal = numberFormatDecimal;
     });
   }
 
@@ -138,6 +144,16 @@ class _MyAppState extends State<MyApp> {
                     const Text('Today as dateFormat.long:'),
                     Text(
                       DateFormat(_dateFormatLong).format(DateTime.now()),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('numberFormat.integer:'),
+                    Text(
+                      '$_numberFormatInteger',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('numberFormat.decimal:'),
+                    Text(
+                      '$_numberFormatDecimal',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
