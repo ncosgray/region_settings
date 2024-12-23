@@ -19,13 +19,18 @@ import 'region_settings_platform_interface.dart';
 /// | TemperatureUnit.celsius | 'C' |
 /// | TemperatureUnit.fahrenheit | 'F' |
 enum TemperatureUnit {
+  /// Celsius units
   celsius('C'),
+
+  /// Fahrenheit units
   fahrenheit('F');
 
+  /// The enum value is 'C' or 'F'.
   final String value;
 
   const TemperatureUnit(this.value);
 
+  /// Output temperature unit as a formatted string.
   @override
   String toString() {
     return 'TemperatureUnit.$name';
@@ -40,16 +45,23 @@ enum TemperatureUnit {
 /// * medium
 /// * long
 class RegionDateFormats {
+  /// Constructs an instance of date format options.
   RegionDateFormats({
     required this.short,
     required this.medium,
     required this.long,
   });
 
+  /// Short date format, e.g. M/d/yy.
   final String short;
+
+  /// Medium date format, e.g. MMM d, y.
   final String medium;
+
+  /// Long date format, e.g. MMMM d, y.
   final String long;
 
+  /// Output date format options as a formatted string.
   @override
   String toString() {
     return '''RegionDateFormats(
@@ -67,14 +79,19 @@ class RegionDateFormats {
 /// * integer
 /// * decimal
 class RegionNumberFormats {
+  /// Constructs an instance of number format options.
   RegionNumberFormats({
     required this.integer,
     required this.decimal,
   });
 
+  /// Integer number format, e.g. #,###,###.
   final String integer;
+
+  /// Decimal number format, e.g. #,###,###.##.
   final String decimal;
 
+  /// Output number format options as a formatted string.
   @override
   String toString() {
     return '''RegionNumberFormats(
@@ -86,9 +103,10 @@ class RegionNumberFormats {
 
 /// Regional settings data.
 ///
-/// Call `RegionSettings` to access device region settings including
+/// Call [RegionSettings] to access device region settings including
 /// temperature unit, measurement system, and date/number format preferences.
 class RegionSettings {
+  /// Constructs an instance of regional settings data.
   RegionSettings({
     required this.temperatureUnits,
     required this.usesMetricSystem,
@@ -97,17 +115,26 @@ class RegionSettings {
     required this.numberFormat,
   });
 
+  /// Temperature unit options enum.
   final TemperatureUnit temperatureUnits;
+
+  /// Boolean indicating if the device is set to use Metric.
   final bool usesMetricSystem;
+
+  /// Integer denoting the first day of the week.
   final int firstDayOfWeek;
+
+  /// Date format options.
   final RegionDateFormats dateFormat;
+
+  /// Number format options.
   final RegionNumberFormats numberFormat;
 
   /// Load all available regional settings from the device settings.
   ///
-  /// Returns a RegionSettings object containing the current regional settings
-  /// for temperature units, metric system use, first day of the week, date
-  /// format patterns, and number format patterns.
+  /// Returns a [RegionSettings] object containing the current regional
+  /// settings for temperature units, metric system use, first day of the week,
+  /// date format patterns, and number format patterns.
   static Future<RegionSettings> getSettings() async {
     TemperatureUnit temperatureUnits = await getTemperatureUnits();
     bool usesMetricSystem = await getUsesMetricSystem();
@@ -133,7 +160,7 @@ class RegionSettings {
 
   /// Get the temperature units from device settings.
   ///
-  /// Returns a TemperatureUnit enum (temperature unit options).
+  /// Returns a [TemperatureUnit] enum (temperature unit options).
   ///
   /// ## iOS Implementation
   ///

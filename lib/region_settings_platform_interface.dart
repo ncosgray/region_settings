@@ -14,6 +14,7 @@ import 'package:plugin_platform_interface/plugin_platform_interface.dart';
 
 import 'region_settings_method_channel.dart';
 
+/// Implementation of [RegionSettingsPlatform].
 abstract class RegionSettingsPlatform extends PlatformInterface {
   /// Constructs a RegionSettingsPlatform.
   RegionSettingsPlatform() : super(token: _token);
