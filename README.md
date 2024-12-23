@@ -1,6 +1,6 @@
 # region_settings
 
-A Flutter plugin to get device region settings such as measurement system, temperature units, and date formats.
+A Flutter plugin to get device region settings such as measurement system, temperature units, and date/number formats.
 
 ## Platform Support
 
@@ -12,18 +12,52 @@ A Flutter plugin to get device region settings such as measurement system, tempe
 
 To use this plugin, add `region_settings` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
 
-Call `RegionSettings` to access device region settings including temperature unit, measurement system, and date format preferences:
+Call `RegionSettings` to access device region settings including temperature unit, measurement system, and date/number format preferences:
 
 ```dart
 import 'package:region_settings/region_settings.dart';
 
 final RegionSettings regionSettings = await RegionSettings.getSettings();
+
 TemperatureUnit temperatureUnits = regionSettings.temperatureUnits;
+// US default: TemperatureUnit.fahrenheit
+// UK default: TemperatureUnit.celsius
+// FR default: TemperatureUnit.celsius
+
 bool usesMetricSystem = regionSettings.usesMetricSystem;
+// US default: false
+// UK default: true
+// FR default: true
+
 int firstDayOfWeek = regionSettings.firstDayOfWeek;
+// US default: 7
+// UK default: 1
+// FR default: 1
+
 String dateFormatShort = regionSettings.dateFormat.short;
+// US default: M/d/yy
+// UK default: dd/MM/y
+// FR default: dd/MM/y
+
 String dateFormatMedium = regionSettings.dateFormat.medium;
+// US default: MMM d, y
+// UK default: d MMM y
+// FR default: d MMM y
+
 String dateFormatLong = regionSettings.dateFormat.long;
+// US default: MMMM d, y
+// UK default: d MMMM y
+// FR default: d MMMM y
+
+String numberFormatInteger = regionSettings.dateFormat.integer;
+// US default: #,###,###
+// UK default: #,###,###
+// FR default: # ### ###
+
+String numberFormatDecimal = regionSettings.dateFormat.decimal;
+// US default: #,###,###.##
+// UK default: #,###,###.##
+// FR default: # ### ###,##
 ```
 
 `temperatureUnits` is set to an enum with the following possible values:
@@ -35,6 +69,8 @@ String dateFormatLong = regionSettings.dateFormat.long;
 `firstDayOfWeek` is an integer in the range 1..7, where 1 is Monday and 7 is Sunday. This value corresponds to the dart:core [DateTime weekday](https://api.dart.dev/stable/3.5.3/dart-core/DateTime/weekday.html) property, and can be compared to constants such as DateTime.monday, as demonstrated in the [example app](https://pub.dev/packages/region_settings/example).
 
 The three `dateFormat` values are the date formatting patterns used by the device's locale and/or region settings. For example, the UK English short date format is typically 'dd/MM/y', while US English uses 'MM/dd/y'. Pass the date format pattern to a function like [intl DateFormat](https://pub.dev/packages/intl) to use this in a Flutter app.
+
+The `numberFormat` values are the number formatting patterns used by the device's locale and/or region settings. This includes group separator characters. For example, US and UK English typically use decimal number format '#,###,###.##', while in France '# ### ###,##' is the default. Pass the number format pattern to a function like [intl NumberFormat](https://pub.dev/packages/intl) to use this in a Flutter app.
 
 ## iOS Implementation
 
@@ -48,8 +84,9 @@ Note that the Temperature preference is not always honored when running on iOS s
 
 iOS 16 and later add a First Day of Week preference to Language & Region. iOS allows selecting any of day of the week. To surface the user's first day of week preference, the First Day of Week setting is used by this plugin, if available. On older versions of iOS that lack this setting, the plugin falls back to assuming the first day of week based on the device's locale. See **Table of First Day of Week by Country** below.
 
-#### Date Format
-The plugin gets date format patterns from iOS. On older versions of iOS, the date format pattern depends on the device's language setting. iOS 16 and later add a Date Format preference to Language & Region, which allows the user to change the date format independently of the language's default date format, including even the separator character.
+#### Date and Number Formats
+
+The plugin gets date and number format patterns from iOS. On older versions of iOS, the format patterns depend on the device's language setting. iOS 16 and later add Date Format and Number Format preferences to Language & Region, which allows the user to change the formats independently of the language's defaults, including the separator characters.
 
 ## Android Implementation
 
@@ -86,6 +123,10 @@ Android 14 and later add a First Day of Week preference to Regional Preferences.
 #### Date Format
 
 Android date formats are based on the device's locale. However, fetching the date format pattern is only possible in API 26 (Oreo) and later. The plugin will do this on supported versions of Android. On older versions of Android, the plugin falls back to standard patterns that should be recognizable worldwide, such as 'yyyy-MM-dd' for the short date.
+
+#### Number Format
+
+Android number formats are based on the device's locale using standard Java NumberFormat methods.
 
 ## Table of First Day of Week by Country
 
