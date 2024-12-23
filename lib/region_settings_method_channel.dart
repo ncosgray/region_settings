@@ -21,6 +21,7 @@ class MethodChannelRegionSettings extends RegionSettingsPlatform {
   @visibleForTesting
   final methodChannel = const MethodChannel('region_settings');
 
+  /// Returns a string indicating temperature unit (C or F).
   @override
   Future<String?> getTemperatureUnits() async {
     final temperatureUnits =
@@ -28,6 +29,7 @@ class MethodChannelRegionSettings extends RegionSettingsPlatform {
     return temperatureUnits;
   }
 
+  /// Returns a boolean indicating if the device is set to use Metric.
   @override
   Future<bool?> getUsesMetricSystem() async {
     final usesMetricSystem =
@@ -35,6 +37,7 @@ class MethodChannelRegionSettings extends RegionSettingsPlatform {
     return usesMetricSystem;
   }
 
+  /// Returns an integer denoting the first day of the week.
   @override
   Future<String?> getFirstDayOfWeek() async {
     final firstDayOfWeek =
@@ -42,6 +45,7 @@ class MethodChannelRegionSettings extends RegionSettingsPlatform {
     return firstDayOfWeek;
   }
 
+  /// Returns a list of date format patterns as strings.
   @override
   Future<List<String>?> getDateFormatsList() async {
     final dateFormatsList =
@@ -49,6 +53,7 @@ class MethodChannelRegionSettings extends RegionSettingsPlatform {
     return dateFormatsList;
   }
 
+  /// Returns a list of number format patterns as strings.
   @override
   Future<List<String>?> getNumberFormatsList() async {
     final numberFormatsList =

@@ -151,9 +151,19 @@ class _MyAppState extends State<MyApp> {
                       '$_numberFormatInteger',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
+                    const Text('Sample integer:'),
+                    Text(
+                      NumberFormat(_numberFormatInteger).format(1234567),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     const Text('numberFormat.decimal:'),
                     Text(
                       '$_numberFormatDecimal',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('Sample decimal:'),
+                    Text(
+                      NumberFormat(_numberFormatDecimal).format(1234567.89),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],

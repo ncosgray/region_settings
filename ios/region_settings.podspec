@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
   s.version          = '0.0.1'
   s.summary          = 'region_settings'
   s.description      = <<-DESC
-A Flutter plugin to get device region settings such as measurement system, temperature units, and date formats.
+A Flutter plugin to get device region settings such as measurement system, temperature units, and date/number formats.
                        DESC
   s.homepage         = 'https://www.nathanatos.com'
   s.license          = { :file => '../LICENSE' }

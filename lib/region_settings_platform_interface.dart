@@ -35,18 +35,23 @@ abstract class RegionSettingsPlatform extends PlatformInterface {
     _instance = instance;
   }
 
+  /// Returns a string indicating temperature unit (C or F).
   Future<String?> getTemperatureUnits() => throw UnimplementedError(
       'getTemperatureUnits() has not been implemented.');
 
+  /// Returns a boolean indicating if the device is set to use Metric.
   Future<bool?> getUsesMetricSystem() => throw UnimplementedError(
       'getUsesMetricSystem() has not been implemented.');
 
+  /// Returns an integer denoting the first day of the week.
   Future<String?> getFirstDayOfWeek() =>
       throw UnimplementedError('getFirstDayOfWeek() has not been implemented.');
 
+  /// Returns a list of date format patterns as strings.
   Future<List<String>?> getDateFormatsList() => throw UnimplementedError(
       'getDateFormatsList() has not been implemented.');
 
+  /// Returns a list of number format patterns as strings.
   Future<List<String>?> getNumberFormatsList() => throw UnimplementedError(
       'getNumberFormatsList() has not been implemented.');
 }
