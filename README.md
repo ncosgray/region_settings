@@ -70,7 +70,7 @@ String numberFormatDecimal = regionSettings.dateFormat.decimal;
 
 The three `dateFormat` values are the date formatting patterns used by the device's locale and/or region settings. For example, the UK English short date format is typically 'dd/MM/y', while US English uses 'MM/dd/y'. Pass the date format pattern to a function like [intl DateFormat](https://pub.dev/packages/intl) to use this in a Flutter app.
 
-The `numberFormat` values are the number formatting patterns used by the device's locale and/or region settings. This includes group separator characters. For example, US and UK English typically use decimal number format '#,###,###.##', while in France '# ### ###,##' is the default. Pass the number format pattern to a function like [intl NumberFormat](https://pub.dev/packages/intl) to use this in a Flutter app.
+The `numberFormat` values are the number formatting patterns used by the device's locale and/or region settings. This includes group separator characters. For example, US and UK English typically use decimal number format '#,###,###.##', while in France '# ### ###,##' is the default. Unfortunately, not all number format patterns work with [intl NumberFormat](https://pub.dev/packages/intl), so it is not recommended to pass the pattern directly to NumberFormat. Instead, parse the pattern as needed; the [example app](https://pub.dev/packages/region_settings/example) includes a simplistic demonstration.
 
 ## iOS Implementation
 

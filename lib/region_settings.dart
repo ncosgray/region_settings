@@ -381,9 +381,10 @@ class RegionSettings {
   /// used by the device's locale and/or region settings. This includes group
   /// separator characters. For example, US and UK English typically use
   /// decimal number format '#,###,###.##', while in France '# ### ###,##' is
-  /// the default. Pass the number format pattern to a function like
-  /// [intl NumberFormat](https://pub.dev/packages/intl) to use this in a
-  /// Flutter app.
+  /// the default. Unfortunately, not all number format patterns work with
+  /// [intl NumberFormat](https://pub.dev/packages/intl), so it is not
+  /// recommended to pass the pattern directly to NumberFormat. Instead, parse
+  /// the pattern as needed.
   ///
   /// ## iOS Implementation
   ///

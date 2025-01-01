@@ -153,7 +153,10 @@ class _MyAppState extends State<MyApp> {
                     ),
                     const Text('Sample integer:'),
                     Text(
-                      NumberFormat(_numberFormatInteger).format(1234567),
+                      _formatNumberWithPattern(
+                        1234567,
+                        _numberFormatInteger,
+                      ),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const Text('numberFormat.decimal:'),
@@ -163,7 +166,11 @@ class _MyAppState extends State<MyApp> {
                     ),
                     const Text('Sample decimal:'),
                     Text(
-                      NumberFormat(_numberFormatDecimal).format(1234567.89),
+                      _formatNumberWithPattern(
+                        1234567.89,
+                        _numberFormatDecimal,
+                        asDecimal: true,
+                      ),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -178,5 +185,38 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+
+  // Convert number to string using a format pattern
+  String _formatNumberWithPattern(double number, String? pattern,
+      {bool asDecimal = false}) {
+    // Handle blank patterns
+    if (pattern == null) {
+      return number.toString();
+    }
+
+    // Convert the number to a string with expected precision and no decimal point
+    String numberStr =
+        number.toStringAsFixed(asDecimal ? 2 : 0).replaceAll('.', '');
+
+    // Throw error if pattern is too short
+    assert(numberStr.length <= '#'.allMatches(pattern).length);
+
+    // Iterate over the pattern and build formatted string
+    String result = '';
+    int numberIndex = numberStr.length - 1;
+    for (int patternIndex = pattern.length - 1;
+        patternIndex >= 0 && numberIndex >= 0;
+        patternIndex--) {
+      if (pattern[patternIndex] == '#') {
+        // Replace placeholder with digit
+        result = '${numberStr[numberIndex]}$result';
+        numberIndex--;
+      } else {
+        // Append non-numeric character unchanged
+        result = '${pattern[patternIndex]}$result';
+      }
+    }
+    return result;
   }
 }
