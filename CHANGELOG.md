@@ -1,3 +1,7 @@
+## 1.2.1
+
+* Document limitations of number format patterns with `intl` package.
+
 ## 1.2.0
 
 * Add support for Number Format (`numberFormat.integer`, `numberFormat.decimal`).
