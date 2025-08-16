@@ -18,7 +18,11 @@ import 'dart:async';
 
 import 'package:region_settings/region_settings.dart';
 
-void main() {
+late RegionSettings regionSettings;
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  regionSettings = await RegionSettings.getSettings();
   runApp(const MyApp());
 }
 
@@ -30,6 +34,7 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  String? _locale;
   TemperatureUnit? _temperatureUnits;
   bool? _usesMetricSystem;
   int? _firstDayOfWeek;
@@ -47,7 +52,8 @@ class _MyAppState extends State<MyApp> {
 
   // Platform messages are asynchronous, so we initialize in an async method.
   Future<void> loadRegionSettings() async {
-    final RegionSettings regionSettings = await RegionSettings.getSettings();
+    regionSettings = await RegionSettings.getSettings();
+    String locale = regionSettings.locale;
     TemperatureUnit temperatureUnits = regionSettings.temperatureUnits;
     bool usesMetricSystem = regionSettings.usesMetricSystem;
     int firstDayOfWeek = regionSettings.firstDayOfWeek;
@@ -67,6 +73,7 @@ class _MyAppState extends State<MyApp> {
     if (!mounted) return;
 
     setState(() {
+      _locale = locale;
       _temperatureUnits = temperatureUnits;
       _usesMetricSystem = usesMetricSystem;
       _firstDayOfWeek = firstDayOfWeek;
@@ -96,6 +103,11 @@ class _MyAppState extends State<MyApp> {
                   childAspectRatio: 4.0,
                   shrinkWrap: true,
                   children: [
+                    const Text('locale:'),
+                    Text(
+                      '$_locale',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
                     const Text('temperatureUnits:'),
                     Text(
                       '$_temperatureUnits',
@@ -151,11 +163,10 @@ class _MyAppState extends State<MyApp> {
                       '$_numberFormatInteger',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const Text('Sample integer:'),
+                    const Text('formatNumber() with integer:'),
                     Text(
-                      _formatNumberWithPattern(
+                      regionSettings.formatNumber(
                         1234567,
-                        _numberFormatInteger,
                       ),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
@@ -164,13 +175,10 @@ class _MyAppState extends State<MyApp> {
                       '$_numberFormatDecimal',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const Text('Sample decimal:'),
+                    const Text('formatNumber() with decimal:'),
                     Text(
-                      _formatNumberWithPattern(
-                        1234567.89,
-                        _numberFormatDecimal,
-                        asDecimal: true,
-                      ),
+                      regionSettings.formatNumber(1234567.89,
+                          decimalPlaces: 2, useGrouping: true),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
@@ -185,38 +193,5 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
-  }
-
-  // Convert number to string using a format pattern
-  String _formatNumberWithPattern(double number, String? pattern,
-      {bool asDecimal = false}) {
-    // Handle blank patterns
-    if (pattern == null) {
-      return number.toString();
-    }
-
-    // Convert the number to a string with expected precision and no decimal point
-    String numberStr =
-        number.toStringAsFixed(asDecimal ? 2 : 0).replaceAll('.', '');
-
-    // Throw error if pattern is too short
-    assert(numberStr.length <= '#'.allMatches(pattern).length);
-
-    // Iterate over the pattern and build formatted string
-    String result = '';
-    int numberIndex = numberStr.length - 1;
-    for (int patternIndex = pattern.length - 1;
-        patternIndex >= 0 && numberIndex >= 0;
-        patternIndex--) {
-      if (pattern[patternIndex] == '#') {
-        // Replace placeholder with digit
-        result = '${numberStr[numberIndex]}$result';
-        numberIndex--;
-      } else {
-        // Append non-numeric character unchanged
-        result = '${pattern[patternIndex]}$result';
-      }
-    }
-    return result;
   }
 }
