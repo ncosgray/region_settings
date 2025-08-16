@@ -43,6 +43,24 @@ enum TemperatureUnit {
   }
 }
 
+/// Date format styles enum.
+///
+/// This enum defines three styles of date formats that can be used with
+/// [RegionSettings.formatDate] or [RegionDateFormats]:
+/// * short
+/// * medium
+/// * long
+enum DateStyle {
+  /// Short date format, e.g. M/d/yy.
+  short,
+
+  /// Medium date format, e.g. MMM d, y.
+  medium,
+
+  /// Long date format, e.g. MMMM d, y.
+  long
+}
+
 /// Date format options.
 ///
 /// This class contains three string fields corresponding to three different
@@ -66,6 +84,18 @@ class RegionDateFormats {
 
   /// Long date format, e.g. MMMM d, y.
   final String long;
+
+  /// Get the date format pattern for a given DateStyle.
+  String pattern(DateStyle style) {
+    switch (style) {
+      case DateStyle.short:
+        return short;
+      case DateStyle.medium:
+        return medium;
+      case DateStyle.long:
+        return long;
+    }
+  }
 
   /// Output date format options as a formatted string.
   @override
@@ -145,8 +175,8 @@ class RegionSettings {
 
   /// ICU standard number format pattern.
   ///
-  /// This is a string that can be used with [intl NumberFormat] to format
-  /// numbers.
+  /// This is a string that can be used with
+  /// [intl NumberFormat](https://pub.dev/packages/intl) to format numbers.
   final String icuNumberFormat;
 
   /// The character used to separate decimal places in numbers.
@@ -223,6 +253,40 @@ class RegionSettings {
       decimalSeparator: decimalSeparator,
       groupSeparator: groupSeparator,
     );
+  }
+
+  /// Format a date using the regional settings.
+  ///
+  /// Returns the formatted [String] representation of a [DateTime] with the
+  /// plaform's locale and regional settings preferences applied. This is a
+  /// convenience method that uses the [intl DateFormat](https://pub.dev/packages/intl)
+  /// class to format the date without needing to manually specify the pattern.
+  ///
+  /// Before using this method, ensure that [getSettings] has been called to
+  /// load the plaform settings.
+  ///
+  /// Parameters:
+  /// * [date] - The date to format.
+  /// * [dateStyle] - Specify the date style. Defaults to [DateStyle.medium].
+  String formatDate(
+    DateTime date, {
+    DateStyle dateStyle = DateStyle.medium,
+  }) {
+    String pattern;
+    switch (dateStyle) {
+      case DateStyle.short:
+        pattern = dateFormat.short;
+        break;
+      case DateStyle.medium:
+        pattern = dateFormat.medium;
+        break;
+      case DateStyle.long:
+        pattern = dateFormat.long;
+        break;
+    }
+
+    DateFormat formatter = DateFormat(pattern, locale);
+    return formatter.format(date);
   }
 
   /// Format a number using the regional settings.
@@ -528,8 +592,9 @@ class RegionSettings {
 
   /// Determine the ICU standard number format pattern from a region pattern.
   /// This is needed to convert platform number patterns into a format that can
-  /// be used with [intl NumberFormat], which expects ICU style patterns where
-  /// decimal and grouping separators are standardized.
+  /// be used with [intl NumberFormat](https://pub.dev/packages/intl), which
+  /// expects ICU style patterns where decimal and grouping separators are
+  /// standardized.
   ///
   /// This method is private and used internally to parse platform patterns.
   static String _getIcuNumberFormat(
