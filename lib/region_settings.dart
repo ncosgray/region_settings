@@ -12,6 +12,12 @@
 
 import 'region_settings_platform_interface.dart';
 
+import 'package:intl/date_symbol_data_local.dart';
+import 'package:intl/find_locale.dart';
+import 'package:intl/intl.dart';
+import 'package:intl/number_symbols_data.dart';
+import 'package:intl/number_symbols.dart';
+
 /// Temperature unit options enum.
 ///
 /// | enum | value |
@@ -108,12 +114,19 @@ class RegionNumberFormats {
 class RegionSettings {
   /// Constructs an instance of regional settings data.
   RegionSettings({
+    required this.locale,
     required this.temperatureUnits,
     required this.usesMetricSystem,
     required this.firstDayOfWeek,
     required this.dateFormat,
     required this.numberFormat,
+    required this.icuNumberFormat,
+    required this.decimalSeparator,
+    required this.groupSeparator,
   });
+
+  /// The locale for the region settings.
+  final String locale;
 
   /// Temperature unit options enum.
   final TemperatureUnit temperatureUnits;
@@ -130,19 +143,70 @@ class RegionSettings {
   /// Number format options.
   final RegionNumberFormats numberFormat;
 
+  /// ICU standard number format pattern.
+  ///
+  /// This is a string that can be used with [intl NumberFormat] to format
+  /// numbers.
+  final String icuNumberFormat;
+
+  /// The character used to separate decimal places in numbers.
+  final String decimalSeparator;
+
+  /// The character used to separate groups of thousands/hundreds in numbers.
+  final String groupSeparator;
+
+  /// Constants related to default format patterns.
+  static const String _defaultDecimalSeparator = '.';
+  static const String _defaultGroupSeparator = ',';
+  static const String _nonDigitRegex = r'[^#0]';
+  static const String _numberSymbolsName = 'regionsettings';
+
   /// Load all available regional settings from the device settings.
   ///
   /// Returns a [RegionSettings] object containing the current regional
   /// settings for temperature units, metric system use, first day of the week,
   /// date format patterns, and number format patterns.
   static Future<RegionSettings> getSettings() async {
+    // Get regional settings from platform
+    String locale = await findSystemLocale();
     TemperatureUnit temperatureUnits = await getTemperatureUnits();
     bool usesMetricSystem = await getUsesMetricSystem();
     int firstDayOfWeek = await getFirstDayOfWeek();
     List<String> dateFormatsList = await getDateFormatsList();
     List<String> numberFormatsList = await getNumberFormatsList();
+    String decimalSeparator =
+        _findLastNonDigit(numberFormatsList[1]) ?? _defaultDecimalSeparator;
+    String groupSeparator =
+        _findFirstNonDigit(numberFormatsList[1]) ?? _defaultGroupSeparator;
+    String icuNumberFormat = _getIcuNumberFormat(
+        numberFormatsList[1], decimalSeparator, groupSeparator);
+
+    // Create number formatting symbols using regional settings
+    await initializeDateFormatting();
+    NumberSymbols localeSymbols =
+        numberFormatSymbols[locale] ?? numberFormatSymbols['en_US']!;
+    NumberSymbols regionSymbols = NumberSymbols(
+      NAME: _numberSymbolsName,
+      DECIMAL_SEP: decimalSeparator, // override with regional setting
+      GROUP_SEP: groupSeparator, // override with regional setting
+      PERCENT: localeSymbols.PERCENT,
+      ZERO_DIGIT: localeSymbols.ZERO_DIGIT,
+      PLUS_SIGN: localeSymbols.PLUS_SIGN,
+      MINUS_SIGN: localeSymbols.MINUS_SIGN,
+      EXP_SYMBOL: localeSymbols.EXP_SYMBOL,
+      PERMILL: localeSymbols.PERMILL,
+      INFINITY: localeSymbols.INFINITY,
+      NAN: localeSymbols.NAN,
+      DECIMAL_PATTERN: icuNumberFormat, // override with regional setting
+      SCIENTIFIC_PATTERN: localeSymbols.SCIENTIFIC_PATTERN,
+      PERCENT_PATTERN: localeSymbols.PERCENT_PATTERN,
+      CURRENCY_PATTERN: localeSymbols.CURRENCY_PATTERN,
+      DEF_CURRENCY_CODE: localeSymbols.DEF_CURRENCY_CODE,
+    );
+    numberFormatSymbols[_numberSymbolsName] = regionSymbols;
 
     return RegionSettings(
+      locale: locale,
       temperatureUnits: temperatureUnits,
       usesMetricSystem: usesMetricSystem,
       firstDayOfWeek: firstDayOfWeek,
@@ -155,7 +219,40 @@ class RegionSettings {
         integer: numberFormatsList[0],
         decimal: numberFormatsList[1],
       ),
+      icuNumberFormat: icuNumberFormat,
+      decimalSeparator: decimalSeparator,
+      groupSeparator: groupSeparator,
     );
+  }
+
+  /// Format a number using the regional settings.
+  ///
+  /// Returns a formatted [String] representation of the number with the
+  /// plaform's regional settings preferences applied. Separator characters and
+  /// grouping styles are determined by the device's locale and region settings.
+  ///
+  /// Before using this method, ensure that [getSettings] has been called to
+  /// load the plaform settings.
+  ///
+  /// Parameters:
+  /// * [number] - The number to format.
+  /// * [decimalPlaces] - Specify decimal places to show. Defaults to 0.
+  /// * [useGrouping] - Separate into groups (e.g. thousands). Defaults to true.
+  String formatNumber(
+    double number, {
+    int decimalPlaces = 0,
+    bool useGrouping = true,
+  }) {
+    assert(decimalPlaces >= 0, 'decimalPlaces must be a non-negative integer');
+
+    NumberFormat formatter = NumberFormat(icuNumberFormat, _numberSymbolsName);
+    formatter.minimumFractionDigits = decimalPlaces;
+    formatter.maximumFractionDigits = decimalPlaces;
+    if (!useGrouping) {
+      formatter.turnOffGrouping();
+    }
+
+    return formatter.format(number);
   }
 
   /// Get the temperature units from device settings.
@@ -406,15 +503,71 @@ class RegionSettings {
     return Future.value(numberFormatsList);
   }
 
+  /// Search a string for the first instance of any non-digit character.
+  ///
+  /// This method is private and used internally to parse platform patterns.
+  static String? _findFirstNonDigit(String text) {
+    RegExp nonDigit = RegExp(_nonDigitRegex);
+    Match? match = nonDigit.firstMatch(text);
+    return match?.group(0);
+  }
+
+  /// Search a string for the last instance of any non-digit character.
+  ///
+  /// This method is private and used internally to parse platform patterns.
+  static String? _findLastNonDigit(String text) {
+    RegExp nonDigit = RegExp(_nonDigitRegex);
+    int lastIndex = text.lastIndexOf(nonDigit);
+
+    if (lastIndex != -1) {
+      return text[lastIndex];
+    } else {
+      return null;
+    }
+  }
+
+  /// Determine the ICU standard number format pattern from a region pattern.
+  /// This is needed to convert platform number patterns into a format that can
+  /// be used with [intl NumberFormat], which expects ICU style patterns where
+  /// decimal and grouping separators are standardized.
+  ///
+  /// This method is private and used internally to parse platform patterns.
+  static String _getIcuNumberFormat(
+    String formatPattern,
+    String decimalSeparator,
+    String groupSeparator,
+  ) {
+    // Use a map to store the replacement for each separator
+    final Map<String, String> replacements = {
+      groupSeparator: _defaultGroupSeparator,
+      decimalSeparator: _defaultDecimalSeparator,
+    };
+
+    // Create a regular expression that matches either separator character
+    final RegExp separatorRegExp = RegExp(
+      '(${RegExp.escape(groupSeparator)}|${RegExp.escape(decimalSeparator)})',
+    );
+
+    return formatPattern.replaceAllMapped(separatorRegExp, (match) {
+      String matchedSeparator = match.group(0)!;
+      // Return the corresponding replacement from the map
+      return replacements[matchedSeparator]!;
+    });
+  }
+
   /// Output regional settings as a formatted string.
   @override
   String toString() {
     return '''RegionSettings(
+      locale: $locale,
       temperatureUnits: $temperatureUnits,
       usesMetricSystem: $usesMetricSystem,
       firstDayOfWeek: $firstDayOfWeek,
       dateFormat: $dateFormat,
       numberFormat: $numberFormat,
+      icuNumberFormat: $icuNumberFormat,
+      decimalSeparator: $decimalSeparator,
+      groupSeparator: $groupSeparator,
     )''';
   }
 }
