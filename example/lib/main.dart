@@ -10,12 +10,8 @@
  *******************************************************************************
 */
 
-import 'package:flutter/material.dart';
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:intl/find_locale.dart';
-import 'package:intl/intl.dart';
 import 'dart:async';
-
+import 'package:flutter/material.dart';
 import 'package:region_settings/region_settings.dart';
 
 late RegionSettings regionSettings;
@@ -62,10 +58,6 @@ class _MyAppState extends State<MyApp> {
     String dateFormatLong = regionSettings.dateFormat.long;
     String numberFormatInteger = regionSettings.numberFormat.integer;
     String numberFormatDecimal = regionSettings.numberFormat.decimal;
-
-    // Get default locale for DateFormat
-    await initializeDateFormatting();
-    Intl.defaultLocale = await findSystemLocale();
 
     // If the widget was removed from the tree while the asynchronous platform
     // message was in flight, we want to discard the reply rather than calling
@@ -133,9 +125,12 @@ class _MyAppState extends State<MyApp> {
                       '$_dateFormatShort',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const Text('Today as dateFormat.short:'),
+                    const Text('formatDate() as short:'),
                     Text(
-                      DateFormat(_dateFormatShort).format(DateTime.now()),
+                      regionSettings.formatDate(
+                        DateTime.now(),
+                        dateStyle: DateStyle.short,
+                      ),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const Text('dateFormat.medium:'),
@@ -143,9 +138,12 @@ class _MyAppState extends State<MyApp> {
                       '$_dateFormatMedium',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const Text('Today as dateFormat.medium:'),
+                    const Text('formatDate() as medium:'),
                     Text(
-                      DateFormat(_dateFormatMedium).format(DateTime.now()),
+                      regionSettings.formatDate(
+                        DateTime.now(),
+                        dateStyle: DateStyle.medium,
+                      ),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const Text('dateFormat.long:'),
@@ -153,9 +151,12 @@ class _MyAppState extends State<MyApp> {
                       '$_dateFormatLong',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const Text('Today as dateFormat.long:'),
+                    const Text('formatDate() as long:'),
                     Text(
-                      DateFormat(_dateFormatLong).format(DateTime.now()),
+                      regionSettings.formatDate(
+                        DateTime.now(),
+                        dateStyle: DateStyle.long,
+                      ),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                     const Text('numberFormat.integer:'),
@@ -163,7 +164,7 @@ class _MyAppState extends State<MyApp> {
                       '$_numberFormatInteger',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const Text('formatNumber() with integer:'),
+                    const Text('formatNumber() as integer:'),
                     Text(
                       regionSettings.formatNumber(
                         1234567,
@@ -175,10 +176,13 @@ class _MyAppState extends State<MyApp> {
                       '$_numberFormatDecimal',
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
-                    const Text('formatNumber() with decimal:'),
+                    const Text('formatNumber() as decimal:'),
                     Text(
-                      regionSettings.formatNumber(1234567.89,
-                          decimalPlaces: 2, useGrouping: true),
+                      regionSettings.formatNumber(
+                        1234567.89,
+                        decimalPlaces: 2,
+                        useGrouping: true,
+                      ),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
