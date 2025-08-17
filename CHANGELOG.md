@@ -1,3 +1,8 @@
+## 1.3.0
+
+* Add date and time formatters: `dateFormat` and `numberFormat` convenience functions use region settings from the platform.
+* Support the new Measurement System preference available in Android 16.
+
 ## 1.2.1
 
 * Document limitations of number format patterns with `intl` package.
