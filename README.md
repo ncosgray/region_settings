@@ -12,7 +12,7 @@ A Flutter plugin to get device region settings such as measurement system, tempe
 
 To use this plugin, add `region_settings` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
 
-Call `RegionSettings` to access device region settings including temperature unit, measurement system, and date/number format preferences:
+Call `RegionSettings` to access device region settings including temperature unit, measurement system, and date/number format preferences. The plugin also offers date/number formatters.
 
 ```dart
 import 'package:region_settings/region_settings.dart';
@@ -68,9 +68,66 @@ String numberFormatDecimal = regionSettings.dateFormat.decimal;
 
 `firstDayOfWeek` is an integer in the range 1..7, where 1 is Monday and 7 is Sunday. This value corresponds to the dart:core [DateTime weekday](https://api.dart.dev/stable/3.5.3/dart-core/DateTime/weekday.html) property, and can be compared to constants such as DateTime.monday, as demonstrated in the [example app](https://pub.dev/packages/region_settings/example).
 
-The three `dateFormat` values are the date formatting patterns used by the device's locale and/or region settings. For example, the UK English short date format is typically 'dd/MM/y', while US English uses 'MM/dd/y'. Pass the date format pattern to a function like [intl DateFormat](https://pub.dev/packages/intl) to use this in a Flutter app.
+The three `dateFormat` values are the date formatting patterns used by the device's locale and/or region settings. For example, the UK English short date format is typically 'dd/MM/y', while US English uses 'MM/dd/y'. Pass the date format pattern to a function like [intl DateFormat](https://pub.dev/packages/intl) to use this in a Flutter app. Or, use the `dateFormat` convenience method provided by this plugin.
 
-The `numberFormat` values are the number formatting patterns used by the device's locale and/or region settings. This includes group separator characters. For example, US and UK English typically use decimal number format '#,###,###.##', while in France '# ### ###,##' is the default. Unfortunately, not all number format patterns work with [intl NumberFormat](https://pub.dev/packages/intl), so it is not recommended to pass the pattern directly to NumberFormat. Instead, parse the pattern as needed; the [example app](https://pub.dev/packages/region_settings/example) includes a simplistic demonstration.
+The `numberFormat` values are the number formatting patterns used by the device's locale and/or region settings. This includes group separator characters. For example, US and UK English typically use decimal number format '#,###,###.##', while in France '# ### ###,##' is the default. Unfortunately, not all number format patterns work with [intl NumberFormat](https://pub.dev/packages/intl), so it is not recommended to pass the pattern directly to NumberFormat. Instead, use the `numberFormat` method provided by this plugin.
+
+## Date and Number Formatters
+
+#### formatDate
+
+After calling `getSettings` to load the platform settings, use this convenience method to format a date (using [intl DateFormat](https://pub.dev/packages/intl) behind the scenes) with the device locale and regional preferences applied. This allows you to format a date without needing to manually specify the formatting pattern or manage the locale.
+
+*Parameters:*
+* `date` - The date to format.
+* `dateStyle` - Specify the date style. Defaults to `DateStyle.medium`.
+
+*Example:*
+```dart
+import 'package:region_settings/region_settings.dart';
+
+final RegionSettings regionSettings = await RegionSettings.getSettings();
+
+String todayFormattedAsLongDate = regionSettings.formatDate(
+    DateTime.now(),
+    dateStyle: DateStyle.long,
+);
+// US default: January 1, 2025
+// UK default: 1 January 2025
+// FR default: 1 janvier 2025
+```
+
+`DateStyle` is an enum defined by this plugin and has the following possible values corresponding to `dateFormat` options:
+| DateStyle | dateFormat |
+|-|-|
+| DateStyle.short | dateFormat.short |
+| DateStyle.medium | dateFormat.medium |
+| DateStyle.long | dateFormat.long |
+
+#### formatNumber
+
+After calling `getSettings` to load the platform settings, use this convenience method to format a number with the regional preferences applied. The formatter is [intl NumberFormat](https://pub.dev/packages/intl), but the plugin overrides separator characters and grouping styles as defined by the device's region settings. This allows you to format a number without needing to manually specify the formatting pattern or manage the locale.
+
+*Parameters:*
+* `number` - The number to format.
+* `decimalPlaces` - Specify decimal places to show. Defaults to 0.
+* `useGrouping` - Separate into groups (e.g. thousands). Defaults to true.
+
+*Example:*
+```dart
+import 'package:region_settings/region_settings.dart';
+
+final RegionSettings regionSettings = await RegionSettings.getSettings();
+
+String speedOfLightFormatted = regionSettings.formatNumber(
+    299792458,
+    decimalPlaces: 1,
+    useGrouping: true,
+);
+// US default: 299,792,458.0
+// UK default: 299,792,458.0
+// FR default: 299 792 458,0
+```
 
 ## iOS Implementation
 
@@ -92,7 +149,7 @@ The plugin gets date and number format patterns from iOS. On older versions of i
 
 #### Measurement System
 
-Android does not have an OS-level measurement system setting. Instead, the plugin must guess the measurement system based on the device's locale. The plugin considers the following countries to be non-Metric:
+Android 16 and later include a separate Measurement System preference in Regional preferences. If available, the plugin will use this setting. If not available, the plugin must guess the measurement system based on the device's locale. The plugin considers the following countries to be non-Metric:
 * American Samoa (US)
 * Bahamas
 * Belize
