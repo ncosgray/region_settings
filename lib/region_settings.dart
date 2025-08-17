@@ -198,7 +198,6 @@ class RegionSettings {
   /// date format patterns, and number format patterns.
   static Future<RegionSettings> getSettings() async {
     // Get regional settings from platform
-    String locale = await findSystemLocale();
     TemperatureUnit temperatureUnits = await getTemperatureUnits();
     bool usesMetricSystem = await getUsesMetricSystem();
     int firstDayOfWeek = await getFirstDayOfWeek();
@@ -211,29 +210,12 @@ class RegionSettings {
     String icuNumberFormat = _getIcuNumberFormat(
         numberFormatsList[1], decimalSeparator, groupSeparator);
 
-    // Create number formatting symbols using regional settings
+    // Initialize intl for date and number formatting
     await initializeDateFormatting();
-    NumberSymbols localeSymbols =
-        numberFormatSymbols[locale] ?? numberFormatSymbols['en_US']!;
-    NumberSymbols regionSymbols = NumberSymbols(
-      NAME: _numberSymbolsName,
-      DECIMAL_SEP: decimalSeparator, // override with regional setting
-      GROUP_SEP: groupSeparator, // override with regional setting
-      PERCENT: localeSymbols.PERCENT,
-      ZERO_DIGIT: localeSymbols.ZERO_DIGIT,
-      PLUS_SIGN: localeSymbols.PLUS_SIGN,
-      MINUS_SIGN: localeSymbols.MINUS_SIGN,
-      EXP_SYMBOL: localeSymbols.EXP_SYMBOL,
-      PERMILL: localeSymbols.PERMILL,
-      INFINITY: localeSymbols.INFINITY,
-      NAN: localeSymbols.NAN,
-      DECIMAL_PATTERN: icuNumberFormat, // override with regional setting
-      SCIENTIFIC_PATTERN: localeSymbols.SCIENTIFIC_PATTERN,
-      PERCENT_PATTERN: localeSymbols.PERCENT_PATTERN,
-      CURRENCY_PATTERN: localeSymbols.CURRENCY_PATTERN,
-      DEF_CURRENCY_CODE: localeSymbols.DEF_CURRENCY_CODE,
-    );
-    numberFormatSymbols[_numberSymbolsName] = regionSymbols;
+    String locale = await findSystemLocale();
+    Intl.defaultLocale = locale;
+    _setNumberSymbols(
+        locale, icuNumberFormat, decimalSeparator, groupSeparator);
 
     return RegionSettings(
       locale: locale,
@@ -308,6 +290,10 @@ class RegionSettings {
     bool useGrouping = true,
   }) {
     assert(decimalPlaces >= 0, 'decimalPlaces must be a non-negative integer');
+
+    // Ensure the number symbols are configured before we attempt to use them
+    _setNumberSymbols(
+        locale, icuNumberFormat, decimalSeparator, groupSeparator);
 
     NumberFormat formatter = NumberFormat(icuNumberFormat, _numberSymbolsName);
     formatter.minimumFractionDigits = decimalPlaces;
@@ -620,6 +606,44 @@ class RegionSettings {
       // Return the corresponding replacement from the map
       return replacements[matchedSeparator]!;
     });
+  }
+
+  /// Create number formatting symbols using regional settings.
+  ///
+  /// This method sets up the number formatting symbols for the current locale
+  /// and overrides the decimal and group separators with the regional settings.
+  /// It is called during initialization to ensure that the number formatting
+  /// symbols are correctly configured based on the device's locale and region
+  /// settings.
+  ///
+  /// This method is private and used internally to manage platform patterns.
+  static void _setNumberSymbols(
+    String locale,
+    String icuNumberFormat,
+    String decimalSeparator,
+    String groupSeparator,
+  ) {
+    NumberSymbols localeSymbols =
+        numberFormatSymbols[locale] ?? numberFormatSymbols['en_US']!;
+    NumberSymbols regionSymbols = NumberSymbols(
+      NAME: _numberSymbolsName,
+      DECIMAL_SEP: decimalSeparator, // override with regional setting
+      GROUP_SEP: groupSeparator, // override with regional setting
+      PERCENT: localeSymbols.PERCENT,
+      ZERO_DIGIT: localeSymbols.ZERO_DIGIT,
+      PLUS_SIGN: localeSymbols.PLUS_SIGN,
+      MINUS_SIGN: localeSymbols.MINUS_SIGN,
+      EXP_SYMBOL: localeSymbols.EXP_SYMBOL,
+      PERMILL: localeSymbols.PERMILL,
+      INFINITY: localeSymbols.INFINITY,
+      NAN: localeSymbols.NAN,
+      DECIMAL_PATTERN: icuNumberFormat, // override with regional setting
+      SCIENTIFIC_PATTERN: localeSymbols.SCIENTIFIC_PATTERN,
+      PERCENT_PATTERN: localeSymbols.PERCENT_PATTERN,
+      CURRENCY_PATTERN: localeSymbols.CURRENCY_PATTERN,
+      DEF_CURRENCY_CODE: localeSymbols.DEF_CURRENCY_CODE,
+    );
+    numberFormatSymbols[_numberSymbolsName] = regionSymbols;
   }
 
   /// Output regional settings as a formatted string.
