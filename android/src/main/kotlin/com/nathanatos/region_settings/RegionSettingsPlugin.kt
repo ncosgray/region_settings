@@ -86,25 +86,34 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
     return locale
   }
 
-  // Check if device locale is set to a country that uses metric system
+  // Get the measurement system from device settings, or use locale default
   private fun getUsesMetricSystem(): Boolean {
-    val countryCode: String = getLocale().country
     var usesMetricSystem = true
-    when (countryCode) {
-      "AS" -> usesMetricSystem = false // American Samoa (US)
-      "BS" -> usesMetricSystem = false // Bahamas
-      "BZ" -> usesMetricSystem = false // Belize
-      "FM" -> usesMetricSystem = false // Micronesia
-      "GU" -> usesMetricSystem = false // Guam (US)
-      "KY" -> usesMetricSystem = false // Cayman Islands
-      "LR" -> usesMetricSystem = false // Liberia
-      "MH" -> usesMetricSystem = false // Marshall Islands
-      "MP" -> usesMetricSystem = false // Northern Mariana Islands (US)
-      "PW" -> usesMetricSystem = false // Palau
-      "TC" -> usesMetricSystem = false // Turks and Caicos Islands
-      "UM" -> usesMetricSystem = false // US Minor Outlying Islands
-      "US" -> usesMetricSystem = false // United States
-      "VI" -> usesMetricSystem = false // US Virgin Islands
+    var measurementSytem: String? = null
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+      measurementSytem = getLocale().getUnicodeLocaleType("ms")
+      if (measurementSytem == "ussystem") {
+        usesMetricSystem = false
+      }
+    }
+    if (measurementSytem == null) {
+      val countryCode: String = getLocale().country
+      when (countryCode) {
+        "AS" -> usesMetricSystem = false // American Samoa (US)
+        "BS" -> usesMetricSystem = false // Bahamas
+        "BZ" -> usesMetricSystem = false // Belize
+        "FM" -> usesMetricSystem = false // Micronesia
+        "GU" -> usesMetricSystem = false // Guam (US)
+        "KY" -> usesMetricSystem = false // Cayman Islands
+        "LR" -> usesMetricSystem = false // Liberia
+        "MH" -> usesMetricSystem = false // Marshall Islands
+        "MP" -> usesMetricSystem = false // Northern Mariana Islands (US)
+        "PW" -> usesMetricSystem = false // Palau
+        "TC" -> usesMetricSystem = false // Turks and Caicos Islands
+        "UM" -> usesMetricSystem = false // US Minor Outlying Islands
+        "US" -> usesMetricSystem = false // United States
+        "VI" -> usesMetricSystem = false // US Virgin Islands
+      }
     }
     return usesMetricSystem
   }

@@ -365,9 +365,11 @@ class RegionSettings {
   ///
   /// ## Android Implementation
   ///
-  /// Android does not have an OS-level measurement system setting. Instead,
-  /// the plugin must guess the measurement system based on the device's
-  /// locale. The plugin considers the following countries to be non-Metric:
+  /// Android 16 and later include a separate Measurement System preference in
+  /// Regional preferences. If available, the plugin will use this setting. If
+  /// not available, the plugin must guess the measurement system based on the
+  /// device's locale. The plugin considers the following countries to be
+  /// non-Metric:
   /// * American Samoa (US)
   /// * Bahamas
   /// * Belize
