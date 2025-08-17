@@ -3,6 +3,11 @@ description: A Flutter plugin to get device region settings such as measurement 
 version: 1.2.1
 repository: https://github.com/ncosgray/region_settings
 issue_tracker: https://github.com/ncosgray/region_settings/issues
+topics:
+  - region
+  - locale
+  - settings
+  - formatting
 
 environment:
   sdk: '>=3.3.4 <4.0.0'
