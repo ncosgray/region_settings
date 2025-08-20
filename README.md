@@ -68,9 +68,9 @@ String numberFormatDecimal = regionSettings.dateFormat.decimal;
 
 `firstDayOfWeek` is an integer in the range 1..7, where 1 is Monday and 7 is Sunday. This value corresponds to the dart:core [DateTime weekday](https://api.dart.dev/stable/3.5.3/dart-core/DateTime/weekday.html) property, and can be compared to constants such as DateTime.monday, as demonstrated in the [example app](https://pub.dev/packages/region_settings/example).
 
-The three `dateFormat` values are the date formatting patterns used by the device's locale and/or region settings. For example, the UK English short date format is typically 'dd/MM/y', while US English uses 'MM/dd/y'. Pass the date format pattern to a function like [intl DateFormat](https://pub.dev/packages/intl) to use this in a Flutter app. Or, use the `dateFormat` convenience method provided by this plugin.
+The three `dateFormat` values are the date formatting patterns used by the device's locale and/or region settings. For example, the UK English short date format is typically 'dd/MM/y', while US English uses 'MM/dd/y'. Pass the date format pattern to a function like [intl DateFormat](https://pub.dev/packages/intl) to use this in a Flutter app. Or, use the `formatDate` convenience method provided by this plugin.
 
-The `numberFormat` values are the number formatting patterns used by the device's locale and/or region settings. This includes group separator characters. For example, US and UK English typically use decimal number format '#,###,###.##', while in France '# ### ###,##' is the default. Unfortunately, not all number format patterns work with [intl NumberFormat](https://pub.dev/packages/intl), so it is not recommended to pass the pattern directly to NumberFormat. Instead, use the `numberFormat` method provided by this plugin.
+The `numberFormat` values are the number formatting patterns used by the device's locale and/or region settings. This includes group separator characters. For example, US and UK English typically use decimal number format '#,###,###.##', while in France '# ### ###,##' is the default. Unfortunately, not all number format patterns work with [intl NumberFormat](https://pub.dev/packages/intl), so it is not recommended to pass the pattern directly to NumberFormat. Instead, use the `formatNumber` method provided by this plugin.
 
 ## Date and Number Formatters
 
