@@ -58,6 +58,16 @@ String numberFormatDecimal = regionSettings.dateFormat.decimal;
 // US default: #,###,###.##
 // UK default: #,###,###.##
 // FR default: # ### ###,##
+
+String decimalSeparator = regionSettings.decimalSeparator;
+// US default: .
+// UK default: .
+// FR default: ,
+
+String groupSeparator = regionSettings.groupSeparator;
+// US default: ,
+// UK default: ,
+// FR default: <space>
 ```
 
 `temperatureUnits` is set to an enum with the following possible values:
@@ -110,8 +120,11 @@ After calling `getSettings` to load the platform settings, use this convenience 
 
 *Parameters:*
 * `number` - The number to format.
-* `decimalPlaces` - Specify decimal places to show. Defaults to 0.
+* `decimalPlaces` - Specify an exact number of decimal places to show. If this is specified, it overrides `minimumFractionDigits` and `maximumFractionDigits`.
+* `minimumFractionDigits` - Specify minimum decimal places to show.
+* `maximumFractionDigits` - Specify maximum decimal places to show.
 * `useGrouping` - Separate into groups (e.g. thousands). Defaults to true.
+* `asPercentage` - Formats the number as a percentage. Defaults to false.
 
 *Example:*
 ```dart
