@@ -1,3 +1,7 @@
+## 1.4.0
+
+* Additional options implemented for `formatNumber`.
+
 ## 1.3.0
 
 * Add date and time formatters: `formatDate` and `formatNumber` convenience functions use region settings from the platform.
