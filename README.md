@@ -58,6 +58,16 @@ String numberFormatDecimal = regionSettings.dateFormat.decimal;
 // US default: #,###,###.##
 // UK default: #,###,###.##
 // FR default: # ### ###,##
+
+String decimalSeparator = regionSettings.decimalSeparator;
+// US default: .
+// UK default: .
+// FR default: ,
+
+String groupSeparator = regionSettings.groupSeparator;
+// US default: ,
+// UK default: ,
+// FR default: <space>
 ```
 
 `temperatureUnits` is set to an enum with the following possible values:
@@ -68,9 +78,9 @@ String numberFormatDecimal = regionSettings.dateFormat.decimal;
 
 `firstDayOfWeek` is an integer in the range 1..7, where 1 is Monday and 7 is Sunday. This value corresponds to the dart:core [DateTime weekday](https://api.dart.dev/stable/3.5.3/dart-core/DateTime/weekday.html) property, and can be compared to constants such as DateTime.monday, as demonstrated in the [example app](https://pub.dev/packages/region_settings/example).
 
-The three `dateFormat` values are the date formatting patterns used by the device's locale and/or region settings. For example, the UK English short date format is typically 'dd/MM/y', while US English uses 'MM/dd/y'. Pass the date format pattern to a function like [intl DateFormat](https://pub.dev/packages/intl) to use this in a Flutter app. Or, use the `dateFormat` convenience method provided by this plugin.
+The three `dateFormat` values are the date formatting patterns used by the device's locale and/or region settings. For example, the UK English short date format is typically 'dd/MM/y', while US English uses 'MM/dd/y'. Pass the date format pattern to a function like [intl DateFormat](https://pub.dev/packages/intl) to use this in a Flutter app. Or, use the `formatDate` convenience method provided by this plugin.
 
-The `numberFormat` values are the number formatting patterns used by the device's locale and/or region settings. This includes group separator characters. For example, US and UK English typically use decimal number format '#,###,###.##', while in France '# ### ###,##' is the default. Unfortunately, not all number format patterns work with [intl NumberFormat](https://pub.dev/packages/intl), so it is not recommended to pass the pattern directly to NumberFormat. Instead, use the `numberFormat` method provided by this plugin.
+The `numberFormat` values are the number formatting patterns used by the device's locale and/or region settings. This includes group separator characters. For example, US and UK English typically use decimal number format '#,###,###.##', while in France '# ### ###,##' is the default. Unfortunately, not all number format patterns work with [intl NumberFormat](https://pub.dev/packages/intl), so it is not recommended to pass the pattern directly to NumberFormat. Instead, use the `formatNumber` method provided by this plugin.
 
 ## Date and Number Formatters
 
@@ -110,8 +120,13 @@ After calling `getSettings` to load the platform settings, use this convenience 
 
 *Parameters:*
 * `number` - The number to format.
-* `decimalPlaces` - Specify decimal places to show. Defaults to 0.
+* `decimalPlaces` - Specify an exact number of decimal places to show.
+* `minimumFractionDigits` - Specify minimum decimal places to show.
+* `maximumFractionDigits` - Specify maximum decimal places to show.
 * `useGrouping` - Separate into groups (e.g. thousands). Defaults to true.
+* `asPercentage` - Formats the number as a percentage. Defaults to false.
+
+ If `decimalPlaces` is specified, it overrides any values provided as minimum and/or maximum fraction digits. If none of `decimalPlaces`, `minimumFractionDigits`, or `maximumFractionDigits` are specified, the number is formatted according to locale defaults.
 
 *Example:*
 ```dart
