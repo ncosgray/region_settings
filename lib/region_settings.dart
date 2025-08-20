@@ -292,12 +292,14 @@ class RegionSettings {
   /// * [minimumFractionDigits] - Specify minimum decimal places to show.
   /// * [maximumFractionDigits] - Specify maximum decimal places to show.
   /// * [useGrouping] - Separate into groups (e.g. thousands). Defaults to true.
+  /// * [asPercentage] - Formats the number as a percentage. Defaults to false.
   String formatNumber(
     double number, {
     int? decimalPlaces,
     int? minimumFractionDigits,
     int? maximumFractionDigits,
     bool useGrouping = true,
+    bool asPercentage = false,
   }) {
     assert(decimalPlaces == null || decimalPlaces >= 0,
         'decimalPlaces must be a non-negative integer');
@@ -316,7 +318,10 @@ class RegionSettings {
     _setNumberSymbols(
         locale, icuNumberFormat, decimalSeparator, groupSeparator);
 
-    NumberFormat formatter = NumberFormat(icuNumberFormat, _numberSymbolsName);
+    NumberFormat formatter = NumberFormat(
+      icuNumberFormat + (asPercentage ? '%' : ''),
+      _numberSymbolsName,
+    );
     if (decimalPlaces != null) {
       formatter.minimumFractionDigits = decimalPlaces;
       formatter.maximumFractionDigits = decimalPlaces;
