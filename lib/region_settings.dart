@@ -278,8 +278,8 @@ class RegionSettings {
   /// grouping styles are determined by the device's locale and region settings.
   ///
   /// If none of [decimalPlaces], [minimumFractionDigits], or
-  /// [maximumFractionDigits] are specified, the number is formatted as an
-  /// integer with no decimal places.
+  /// [maximumFractionDigits] are specified, the number is formatted according
+  /// to locale defaults.
   ///
   /// Before using this method, ensure that [getSettings] has been called to
   /// load the plaform settings.

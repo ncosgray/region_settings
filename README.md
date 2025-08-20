@@ -120,11 +120,13 @@ After calling `getSettings` to load the platform settings, use this convenience 
 
 *Parameters:*
 * `number` - The number to format.
-* `decimalPlaces` - Specify an exact number of decimal places to show. If this is specified, it overrides `minimumFractionDigits` and `maximumFractionDigits`.
+* `decimalPlaces` - Specify an exact number of decimal places to show.
 * `minimumFractionDigits` - Specify minimum decimal places to show.
 * `maximumFractionDigits` - Specify maximum decimal places to show.
 * `useGrouping` - Separate into groups (e.g. thousands). Defaults to true.
 * `asPercentage` - Formats the number as a percentage. Defaults to false.
+
+ If `decimalPlaces` is specified, it overrides any values provided as minimum and/or maximum fraction digits. If none of `decimalPlaces`, `minimumFractionDigits`, or `maximumFractionDigits` are specified, the number is formatted according to locale defaults.
 
 *Example:*
 ```dart
