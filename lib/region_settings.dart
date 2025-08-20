@@ -277,27 +277,57 @@ class RegionSettings {
   /// plaform's regional settings preferences applied. Separator characters and
   /// grouping styles are determined by the device's locale and region settings.
   ///
+  /// If none of [decimalPlaces], [minimumFractionDigits], or
+  /// [maximumFractionDigits] are specified, the number is formatted as an
+  /// integer with no decimal places.
+  ///
   /// Before using this method, ensure that [getSettings] has been called to
   /// load the plaform settings.
   ///
   /// Parameters:
   /// * [number] - The number to format.
-  /// * [decimalPlaces] - Specify decimal places to show. Defaults to 0.
+  /// * [decimalPlaces] - Specify an exact number of decimal places to show.
+  /// If this is specified, it overrides [minimumFractionDigits] and
+  /// [maximumFractionDigits].
+  /// * [minimumFractionDigits] - Specify minimum decimal places to show.
+  /// * [maximumFractionDigits] - Specify maximum decimal places to show.
   /// * [useGrouping] - Separate into groups (e.g. thousands). Defaults to true.
   String formatNumber(
     double number, {
-    int decimalPlaces = 0,
+    int? decimalPlaces,
+    int? minimumFractionDigits,
+    int? maximumFractionDigits,
     bool useGrouping = true,
   }) {
-    assert(decimalPlaces >= 0, 'decimalPlaces must be a non-negative integer');
+    assert(decimalPlaces == null || decimalPlaces >= 0,
+        'decimalPlaces must be a non-negative integer');
+    assert(minimumFractionDigits == null || minimumFractionDigits >= 0,
+        'minimumFractionDigits must be a non-negative integer');
+    assert(maximumFractionDigits == null || maximumFractionDigits >= 0,
+        'maximumFractionDigits must be a non-negative integer');
+    assert(
+      minimumFractionDigits == null ||
+          maximumFractionDigits == null ||
+          minimumFractionDigits <= maximumFractionDigits,
+      'minimumFractionDigits must not be greater than maximumFractionDigits',
+    );
 
     // Ensure the number symbols are configured before we attempt to use them
     _setNumberSymbols(
         locale, icuNumberFormat, decimalSeparator, groupSeparator);
 
     NumberFormat formatter = NumberFormat(icuNumberFormat, _numberSymbolsName);
-    formatter.minimumFractionDigits = decimalPlaces;
-    formatter.maximumFractionDigits = decimalPlaces;
+    if (decimalPlaces != null) {
+      formatter.minimumFractionDigits = decimalPlaces;
+      formatter.maximumFractionDigits = decimalPlaces;
+    } else {
+      if (minimumFractionDigits != null) {
+        formatter.minimumFractionDigits = minimumFractionDigits;
+      }
+      if (maximumFractionDigits != null) {
+        formatter.maximumFractionDigits = maximumFractionDigits;
+      }
+    }
     if (!useGrouping) {
       formatter.turnOffGrouping();
     }
