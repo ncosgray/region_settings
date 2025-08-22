@@ -90,7 +90,7 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
   private fun getUsesMetricSystem(): Boolean {
     var usesMetricSystem = true
     var measurementSytem: String? = null
-    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.BAKLAVA) {
+    if (Build.VERSION.SDK_INT >= 36) { // Build.VERSION_CODES.BAKLAVA
       measurementSytem = getLocale().getUnicodeLocaleType("ms")
       if (measurementSytem == "ussystem") {
         usesMetricSystem = false
