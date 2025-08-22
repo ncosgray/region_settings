@@ -12,7 +12,7 @@ A Flutter plugin to get device region settings such as measurement system, tempe
 
 To use this plugin, add `region_settings` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
 
-Call `RegionSettings` to access device region settings including temperature unit, measurement system, and date/number format preferences. The plugin also offers date/number formatters.
+Call `RegionSettings` to access device region settings including temperature unit, measurement system, and date/number format preferences. The plugin also offers [Date and Number Formatters](#date-and-number-formatters).
 
 ```dart
 import 'package:region_settings/region_settings.dart';
@@ -49,12 +49,12 @@ String dateFormatLong = regionSettings.dateFormat.long;
 // UK default: d MMMM y
 // FR default: d MMMM y
 
-String numberFormatInteger = regionSettings.dateFormat.integer;
+String numberFormatInteger = regionSettings.numberFormat.integer;
 // US default: #,###,###
 // UK default: #,###,###
 // FR default: # ### ###
 
-String numberFormatDecimal = regionSettings.dateFormat.decimal;
+String numberFormatDecimal = regionSettings.numberFormat.decimal;
 // US default: #,###,###.##
 // UK default: #,###,###.##
 // FR default: # ### ###,##
