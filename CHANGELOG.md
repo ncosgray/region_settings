@@ -1,3 +1,7 @@
+## 1.4.1
+
+* Improve compatibility with older Android compile SDK versions.
+
 ## 1.4.0
 
 * Additional options implemented for `formatNumber`.
