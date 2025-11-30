@@ -125,6 +125,7 @@ After calling `getSettings` to load the platform settings, use this convenience 
 * `minimumFractionDigits` - Specify minimum decimal places to show.
 * `maximumFractionDigits` - Specify maximum decimal places to show.
 * `useGrouping` - Separate into groups (e.g. thousands). Defaults to true.
+* `displayTrailingZeros` - Display trailing zeros, potentially overriding `minimumFractionDigits`. Defaults to true.
 * `asPercentage` - Formats the number as a percentage. Defaults to false.
 
  If `decimalPlaces` is specified, it overrides any values provided as minimum and/or maximum fraction digits. If none of `decimalPlaces`, `minimumFractionDigits`, or `maximumFractionDigits` are specified, the number is formatted according to locale defaults.

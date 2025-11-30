@@ -293,6 +293,8 @@ class RegionSettings {
   /// * [minimumFractionDigits] - Specify minimum decimal places to show.
   /// * [maximumFractionDigits] - Specify maximum decimal places to show.
   /// * [useGrouping] - Separate into groups (e.g. thousands). Defaults to true.
+  /// * [displayTrailingZeros] - Display trailing zeros, potentially overriding
+  /// [minimumFractionDigits]. Defaults to true.
   /// * [asPercentage] - Formats the number as a percentage. Defaults to false.
   String formatNumber(
     double number, {
@@ -301,6 +303,7 @@ class RegionSettings {
     int? minimumFractionDigits,
     int? maximumFractionDigits,
     bool useGrouping = true,
+    bool displayTrailingZeros = true,
     bool asPercentage = false,
   }) {
     assert(decimalPlaces == null || decimalPlaces >= 0,
@@ -340,6 +343,9 @@ class RegionSettings {
     if (significantDigits != null) {
       formatter.significantDigitsInUse = true;
       formatter.significantDigits = significantDigits;
+    }
+    if (!displayTrailingZeros) {
+      formatter.minimumFractionDigits = 0;
     }
     if (!useGrouping) {
       formatter.turnOffGrouping();
