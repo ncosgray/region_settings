@@ -121,6 +121,7 @@ After calling `getSettings` to load the platform settings, use this convenience 
 *Parameters:*
 * `number` - The number to format.
 * `decimalPlaces` - Specify an exact number of decimal places to show.
+* `significantDigits` - Specify the number of significant digits.
 * `minimumFractionDigits` - Specify minimum decimal places to show.
 * `maximumFractionDigits` - Specify maximum decimal places to show.
 * `useGrouping` - Separate into groups (e.g. thousands). Defaults to true.

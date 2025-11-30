@@ -289,6 +289,7 @@ class RegionSettings {
   /// * [decimalPlaces] - Specify an exact number of decimal places to show.
   /// If this is specified, it overrides [minimumFractionDigits] and
   /// [maximumFractionDigits].
+  /// * [significantDigits] - Specify the number of significant digits.
   /// * [minimumFractionDigits] - Specify minimum decimal places to show.
   /// * [maximumFractionDigits] - Specify maximum decimal places to show.
   /// * [useGrouping] - Separate into groups (e.g. thousands). Defaults to true.
@@ -296,6 +297,7 @@ class RegionSettings {
   String formatNumber(
     double number, {
     int? decimalPlaces,
+    int? significantDigits,
     int? minimumFractionDigits,
     int? maximumFractionDigits,
     bool useGrouping = true,
@@ -303,6 +305,8 @@ class RegionSettings {
   }) {
     assert(decimalPlaces == null || decimalPlaces >= 0,
         'decimalPlaces must be a non-negative integer');
+    assert(significantDigits == null || significantDigits >= 0,
+        'significantDigits must be a non-negative integer');
     assert(minimumFractionDigits == null || minimumFractionDigits >= 0,
         'minimumFractionDigits must be a non-negative integer');
     assert(maximumFractionDigits == null || maximumFractionDigits >= 0,
@@ -332,6 +336,10 @@ class RegionSettings {
       if (maximumFractionDigits != null) {
         formatter.maximumFractionDigits = maximumFractionDigits;
       }
+    }
+    if (significantDigits != null) {
+      formatter.significantDigitsInUse = true;
+      formatter.significantDigits = significantDigits;
     }
     if (!useGrouping) {
       formatter.turnOffGrouping();
