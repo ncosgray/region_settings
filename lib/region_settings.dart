@@ -247,27 +247,45 @@ class RegionSettings {
   /// Before using this method, ensure that [getSettings] has been called to
   /// load the plaform settings.
   ///
+  /// If [forceLocale] is provided, the date will be formatted using that locale
+  /// instead of the device's locale settings.
+  ///
   /// Parameters:
   /// * [date] - The date to format.
   /// * [dateStyle] - Specify the date style. Defaults to [DateStyle.medium].
+  /// * [forceLocale] - Optionally force a specific locale for formatting.
   String formatDate(
     DateTime date, {
     DateStyle dateStyle = DateStyle.medium,
+    String? forceLocale,
   }) {
+    // Allow locale override
+    bool hasForcedLocale =
+        (forceLocale != null && numberFormatSymbols.containsKey(forceLocale));
+
     String pattern;
     switch (dateStyle) {
       case DateStyle.short:
-        pattern = dateFormat.short;
+        pattern = hasForcedLocale
+            ? DateFormat.yMd(forceLocale).pattern!
+            : dateFormat.short;
         break;
       case DateStyle.medium:
-        pattern = dateFormat.medium;
+        pattern = hasForcedLocale
+            ? DateFormat.yMMMd(forceLocale).pattern!
+            : dateFormat.medium;
         break;
       case DateStyle.long:
-        pattern = dateFormat.long;
+        pattern = hasForcedLocale
+            ? DateFormat.yMMMMd(forceLocale).pattern!
+            : dateFormat.long;
         break;
     }
 
-    DateFormat formatter = DateFormat(pattern, locale);
+    DateFormat formatter = DateFormat(
+      pattern,
+      hasForcedLocale ? forceLocale : locale,
+    );
     return formatter.format(date);
   }
 
@@ -284,6 +302,9 @@ class RegionSettings {
   /// Before using this method, ensure that [getSettings] has been called to
   /// load the plaform settings.
   ///
+  /// If [forceLocale] is provided, the number will be formatted using that
+  /// locale instead of the device's locale settings.
+  ///
   /// Parameters:
   /// * [number] - The number to format.
   /// * [decimalPlaces] - Specify an exact number of decimal places to show.
@@ -296,6 +317,7 @@ class RegionSettings {
   /// * [displayTrailingZeros] - Display trailing zeros, potentially overriding
   /// [minimumFractionDigits]. Defaults to true.
   /// * [asPercentage] - Formats the number as a percentage. Defaults to false.
+  /// * [forceLocale] - Optionally force a specific locale for formatting.
   String formatNumber(
     double number, {
     int? decimalPlaces,
@@ -305,6 +327,7 @@ class RegionSettings {
     bool useGrouping = true,
     bool displayTrailingZeros = true,
     bool asPercentage = false,
+    String? forceLocale,
   }) {
     assert(decimalPlaces == null || decimalPlaces >= 0,
         'decimalPlaces must be a non-negative integer');
@@ -325,9 +348,15 @@ class RegionSettings {
     _setNumberSymbols(
         locale, icuNumberFormat, decimalSeparator, groupSeparator);
 
+    // Allow locale override
+    String numberLocale =
+        (forceLocale != null && numberFormatSymbols.containsKey(forceLocale))
+            ? forceLocale
+            : _numberSymbolsName;
+
     NumberFormat formatter = NumberFormat(
       icuNumberFormat + (asPercentage ? '%' : ''),
-      _numberSymbolsName,
+      numberLocale,
     );
     if (decimalPlaces != null) {
       formatter.minimumFractionDigits = decimalPlaces;

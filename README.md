@@ -91,6 +91,7 @@ After calling `getSettings` to load the platform settings, use this convenience 
 *Parameters:*
 * `date` - The date to format.
 * `dateStyle` - Specify the date style. Defaults to `DateStyle.medium`.
+* `forceLocale` - Force a specific locale for formatting instead of using device region settings.
 
 *Example:*
 ```dart
@@ -127,6 +128,7 @@ After calling `getSettings` to load the platform settings, use this convenience 
 * `useGrouping` - Separate into groups (e.g. thousands). Defaults to true.
 * `displayTrailingZeros` - Display trailing zeros, potentially overriding `minimumFractionDigits`. Defaults to true.
 * `asPercentage` - Formats the number as a percentage. Defaults to false.
+* `forceLocale` - Force a specific locale for formatting instead of using device region settings.
 
  If `decimalPlaces` is specified, it overrides any values provided as minimum and/or maximum fraction digits. If none of `decimalPlaces`, `minimumFractionDigits`, or `maximumFractionDigits` are specified, the number is formatted according to locale defaults.
 
@@ -145,6 +147,12 @@ String speedOfLightFormatted = regionSettings.formatNumber(
 // UK default: 299,792,458.0
 // FR default: 299 792 458,0
 ```
+
+#### forceLocale
+
+If `forceLocale` is provided to either `formatDate` or `formatNumber`, the value will be formatted using that locale instead of the device's language and region settings. `forceLocale` will apply the default date/number formatting for the given locale.
+
+The use case for this is to allow developers whose apps have in-app language preferences to use `RegionSettings` formatters everywhere. Normally `forceLocale` would be omitted to follow system settings. However, if an app language preference is selected to override the system settings, its locale string would be passed to the `RegionSettings` formatter function via `forceLocale`. In this way, it's possible to remove some complexity (and avoid directly interacting with `intl` for formatting) while being flexible enough to apply language and region settings from the device when appropriate.
 
 ## iOS Implementation
 
