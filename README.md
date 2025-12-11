@@ -204,7 +204,7 @@ Android 14 and later add a First Day of Week preference to Regional Preferences.
 
 #### Date Format
 
-Android date formats are based on the device's locale. However, fetching the date format pattern is only possible in API 26 (Oreo) and later. The plugin will do this on supported versions of Android. On older versions of Android, the plugin falls back to standard patterns that should be recognizable worldwide, such as 'yyyy-MM-dd' for the short date.
+Android date formats are based on the device's locale. However, fetching the date format pattern is only possible in API 26 (Oreo) and later. The plugin will do this on supported versions of Android. On older versions of Android, the plugin falls back to standard patterns that should be recognizable worldwide, such as 'yyyy-MM-dd' for the short date and 'HH:mm' for the short time.
 
 #### Number Format
 
