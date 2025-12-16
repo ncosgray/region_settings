@@ -55,6 +55,9 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
       "getDateFormatsList" -> {
         result.success(getDateFormatsList())
       }
+      "getTimeFormatsList" -> {
+        result.success(getTimeFormatsList())
+      }
       "getNumberFormatsList" -> {
         result.success(getNumberFormatsList())
       }
@@ -234,6 +237,29 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
         getLocale())
     }
     return dateFormatsList
+  }
+
+  // Get the time formats from device settings, or use generic default
+  private fun getTimeFormatsList(): MutableList<String> {
+    val timeFormatsList = mutableListOf("HH:mm", "HH:mm:ss", "HH:mm:ss z")
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      timeFormatsList[0] = DateTimeFormatterBuilder.getLocalizedDateTimePattern(
+        null,
+        FormatStyle.SHORT,
+        IsoChronology.INSTANCE,
+        getLocale())
+      timeFormatsList[1] = DateTimeFormatterBuilder.getLocalizedDateTimePattern(
+        null,
+        FormatStyle.MEDIUM,
+        IsoChronology.INSTANCE,
+        getLocale())
+      timeFormatsList[2] = DateTimeFormatterBuilder.getLocalizedDateTimePattern(
+        null,
+        FormatStyle.LONG,
+        IsoChronology.INSTANCE,
+        getLocale())
+    }
+    return timeFormatsList
   }
 
   // Convert 1s to #s for format pattern

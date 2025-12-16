@@ -30,6 +30,8 @@ public class RegionSettingsPlugin: NSObject, FlutterPlugin {
         result(getFirstDayOfWeek())
       case "getDateFormatsList":
         result(getDateFormatsList())
+      case "getTimeFormatsList":
+        result(getTimeFormatsList())
       case "getNumberFormatsList":
         result(getNumberFormatsList())
       default:
@@ -163,6 +165,20 @@ public class RegionSettingsPlugin: NSObject, FlutterPlugin {
     formatter.dateStyle = DateFormatter.Style.long
     dateFormatsList.append(formatter.dateFormat)
     return dateFormatsList
+  }
+
+  // Get the time formats from device settings
+  private func getTimeFormatsList() -> [String] {
+    var timeFormatsList: [String] = []
+    let formatter = DateFormatter()
+    formatter.dateStyle = .none
+    formatter.timeStyle = DateFormatter.Style.short
+    timeFormatsList.append(formatter.dateFormat)
+    formatter.timeStyle = DateFormatter.Style.medium
+    timeFormatsList.append(formatter.dateFormat)
+    formatter.timeStyle = DateFormatter.Style.long
+    timeFormatsList.append(formatter.dateFormat)
+    return timeFormatsList
   }
 
   // Convert 1s to #s for format pattern

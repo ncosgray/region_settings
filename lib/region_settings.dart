@@ -108,6 +108,71 @@ class RegionDateFormats {
   }
 }
 
+/// Time format styles enum.
+///
+/// This enum defines three styles of time formats that can be used with
+/// [RegionSettings.formatDate] or [RegionTimeFormats]:
+/// * short
+/// * medium
+/// * long
+enum TimeStyle {
+  /// Short time format, e.g. h:mm a.
+  short,
+
+  /// Medium time format, e.g. h:mm:ss a.
+  medium,
+
+  /// Long time format, e.g. h:mm:ss a z.
+  long
+}
+
+/// Time format options.
+///
+/// This class contains three string fields corresponding to three different
+/// styles of time formats:
+/// * short
+/// * medium
+/// * long
+class RegionTimeFormats {
+  /// Constructs an instance of time format options.
+  RegionTimeFormats({
+    required this.short,
+    required this.medium,
+    required this.long,
+  });
+
+  /// Short time format, e.g. h:mm a.
+  final String short;
+
+  /// Medium time format, e.g. h:mm:ss a.
+  final String medium;
+
+  /// Long time format, e.g. h:mm:ss a z.
+  final String long;
+
+  /// Get the time format pattern for a given TimeStyle.
+  String pattern(TimeStyle style) {
+    switch (style) {
+      case TimeStyle.short:
+        return short;
+      case TimeStyle.medium:
+        return medium;
+      case TimeStyle.long:
+        return long;
+    }
+  }
+
+  /// Output time format options as a formatted string.
+  @override
+  String toString() {
+    return '''RegionTimeFormats(
+      short: '$short',
+      medium: '$medium',
+      long: '$long',
+    )''';
+  }
+}
+
 /// Number format options.
 ///
 /// This class contains two string fields corresponding to two different styles
@@ -149,6 +214,7 @@ class RegionSettings {
     required this.usesMetricSystem,
     required this.firstDayOfWeek,
     required this.dateFormat,
+    required this.timeFormat,
     required this.numberFormat,
     required this.icuNumberFormat,
     required this.decimalSeparator,
@@ -169,6 +235,9 @@ class RegionSettings {
 
   /// Date format options.
   final RegionDateFormats dateFormat;
+
+  /// Time format options.
+  final RegionTimeFormats timeFormat;
 
   /// Number format options.
   final RegionNumberFormats numberFormat;
@@ -202,6 +271,7 @@ class RegionSettings {
     bool usesMetricSystem = await getUsesMetricSystem();
     int firstDayOfWeek = await getFirstDayOfWeek();
     List<String> dateFormatsList = await getDateFormatsList();
+    List<String> timeFormatsList = await getTimeFormatsList();
     List<String> numberFormatsList = await getNumberFormatsList();
     String decimalSeparator =
         _findLastNonDigit(numberFormatsList[1]) ?? _defaultDecimalSeparator;
@@ -227,6 +297,11 @@ class RegionSettings {
         medium: dateFormatsList[1],
         long: dateFormatsList[2],
       ),
+      timeFormat: RegionTimeFormats(
+        short: timeFormatsList[0],
+        medium: timeFormatsList[1],
+        long: timeFormatsList[2],
+      ),
       numberFormat: RegionNumberFormats(
         integer: numberFormatsList[0],
         decimal: numberFormatsList[1],
@@ -247,28 +322,102 @@ class RegionSettings {
   /// Before using this method, ensure that [getSettings] has been called to
   /// load the plaform settings.
   ///
+  /// If [forceLocale] is provided, the date will be formatted using that locale
+  /// instead of the device's locale settings.
+  ///
   /// Parameters:
   /// * [date] - The date to format.
   /// * [dateStyle] - Specify the date style. Defaults to [DateStyle.medium].
+  /// * [forceLocale] - Optionally force a specific locale for formatting.
   String formatDate(
     DateTime date, {
     DateStyle dateStyle = DateStyle.medium,
+    String? forceLocale,
   }) {
+    // Allow locale override
+    bool hasForcedLocale =
+        (forceLocale != null && numberFormatSymbols.containsKey(forceLocale));
+
     String pattern;
     switch (dateStyle) {
       case DateStyle.short:
-        pattern = dateFormat.short;
+        pattern = hasForcedLocale
+            ? DateFormat.yMd(forceLocale).pattern!
+            : dateFormat.short;
         break;
       case DateStyle.medium:
-        pattern = dateFormat.medium;
+        pattern = hasForcedLocale
+            ? DateFormat.yMMMd(forceLocale).pattern!
+            : dateFormat.medium;
         break;
       case DateStyle.long:
-        pattern = dateFormat.long;
+        pattern = hasForcedLocale
+            ? DateFormat.yMMMMd(forceLocale).pattern!
+            : dateFormat.long;
         break;
     }
 
-    DateFormat formatter = DateFormat(pattern, locale);
+    DateFormat formatter = DateFormat(
+      pattern,
+      hasForcedLocale ? forceLocale : locale,
+    );
     return formatter.format(date);
+  }
+
+  /// Format a time using the regional settings.
+  ///
+  /// Returns the formatted [String] representation of a [DateTime] with the
+  /// plaform's locale and regional settings preferences applied. This is a
+  /// convenience method that uses the [intl DateFormat](https://pub.dev/packages/intl)
+  /// class to format the time without needing to manually specify the pattern.
+  ///
+  /// *Known limitation:* Dart [DateTime] does not support time zones.
+  /// Therefore, the time zone portion of long times will be omitted when
+  /// formatting.
+  ///
+  /// Before using this method, ensure that [getSettings] has been called to
+  /// load the plaform settings.
+  ///
+  /// If [forceLocale] is provided, the time will be formatted using that locale
+  /// instead of the device's locale settings.
+  ///
+  /// Parameters:
+  /// * [time] - The time to format.
+  /// * [timeStyle] - Specify the time style. Defaults to [TimeStyle.short].
+  /// * [forceLocale] - Optionally force a specific locale for formatting.
+  String formatTime(
+    DateTime time, {
+    TimeStyle timeStyle = TimeStyle.short,
+    String? forceLocale,
+  }) {
+    // Allow locale override
+    bool hasForcedLocale =
+        (forceLocale != null && numberFormatSymbols.containsKey(forceLocale));
+
+    String pattern;
+    switch (timeStyle) {
+      case TimeStyle.short:
+        pattern = hasForcedLocale
+            ? DateFormat.jm(forceLocale).pattern!
+            : timeFormat.short;
+        break;
+      case TimeStyle.medium:
+        pattern = hasForcedLocale
+            ? DateFormat.jms(forceLocale).pattern!
+            : timeFormat.medium;
+        break;
+      case TimeStyle.long:
+        pattern = hasForcedLocale
+            ? "${DateFormat.jms(forceLocale).pattern!} z"
+            : timeFormat.long;
+        break;
+    }
+
+    DateFormat formatter = DateFormat(
+      pattern,
+      hasForcedLocale ? forceLocale : locale,
+    );
+    return formatter.format(time);
   }
 
   /// Format a number using the regional settings.
@@ -284,25 +433,37 @@ class RegionSettings {
   /// Before using this method, ensure that [getSettings] has been called to
   /// load the plaform settings.
   ///
+  /// If [forceLocale] is provided, the number will be formatted using that
+  /// locale instead of the device's locale settings.
+  ///
   /// Parameters:
   /// * [number] - The number to format.
   /// * [decimalPlaces] - Specify an exact number of decimal places to show.
   /// If this is specified, it overrides [minimumFractionDigits] and
   /// [maximumFractionDigits].
+  /// * [significantDigits] - Specify the number of significant digits.
   /// * [minimumFractionDigits] - Specify minimum decimal places to show.
   /// * [maximumFractionDigits] - Specify maximum decimal places to show.
   /// * [useGrouping] - Separate into groups (e.g. thousands). Defaults to true.
+  /// * [displayTrailingZeros] - Display trailing zeros, potentially overriding
+  /// [minimumFractionDigits]. Defaults to true.
   /// * [asPercentage] - Formats the number as a percentage. Defaults to false.
+  /// * [forceLocale] - Optionally force a specific locale for formatting.
   String formatNumber(
     double number, {
     int? decimalPlaces,
+    int? significantDigits,
     int? minimumFractionDigits,
     int? maximumFractionDigits,
     bool useGrouping = true,
+    bool displayTrailingZeros = true,
     bool asPercentage = false,
+    String? forceLocale,
   }) {
     assert(decimalPlaces == null || decimalPlaces >= 0,
         'decimalPlaces must be a non-negative integer');
+    assert(significantDigits == null || significantDigits >= 0,
+        'significantDigits must be a non-negative integer');
     assert(minimumFractionDigits == null || minimumFractionDigits >= 0,
         'minimumFractionDigits must be a non-negative integer');
     assert(maximumFractionDigits == null || maximumFractionDigits >= 0,
@@ -318,9 +479,15 @@ class RegionSettings {
     _setNumberSymbols(
         locale, icuNumberFormat, decimalSeparator, groupSeparator);
 
+    // Allow locale override
+    String numberLocale =
+        (forceLocale != null && numberFormatSymbols.containsKey(forceLocale))
+            ? forceLocale
+            : _numberSymbolsName;
+
     NumberFormat formatter = NumberFormat(
       icuNumberFormat + (asPercentage ? '%' : ''),
-      _numberSymbolsName,
+      numberLocale,
     );
     if (decimalPlaces != null) {
       formatter.minimumFractionDigits = decimalPlaces;
@@ -332,6 +499,13 @@ class RegionSettings {
       if (maximumFractionDigits != null) {
         formatter.maximumFractionDigits = maximumFractionDigits;
       }
+    }
+    if (significantDigits != null) {
+      formatter.significantDigitsInUse = true;
+      formatter.significantDigits = significantDigits;
+    }
+    if (!displayTrailingZeros) {
+      formatter.minimumFractionDigits = 0;
     }
     if (!useGrouping) {
       formatter.turnOffGrouping();
@@ -550,12 +724,54 @@ class RegionSettings {
   /// the date format pattern is only possible in API 26 (Oreo) and later. The
   /// plugin will do this on supported versions of Android. On older versions
   /// of Android, the plugin falls back to standard patterns that should be
-  /// recognizable worldwide, such as 'yyyy-MM-dd' for the short date.
+  /// recognizable worldwide, such as 'yyyy-MM-dd' for the short date and
+  /// 'HH:mm' for the short time.
   static Future<List<String>> getDateFormatsList() async {
     List<String> dateFormatsList =
         await RegionSettingsPlatform.instance.getDateFormatsList() ??
             ['', '', ''];
     return Future.value(dateFormatsList);
+  }
+
+  /// Get the time formats from device settings.
+  ///
+  /// Returns a list of time format strings corresponding to short, medium, and
+  /// long time formats. The three values are the time formatting patterns used
+  /// by the device's locale and/or region settings. For example, the UK
+  /// English short time format is typically 'HH:mm', while US English uses
+  /// 'h:mm a'. Note that these formats represent clock times rather than
+  /// stopwatch times. Pass the time format pattern to a function like
+  /// [intl DateFormat](https://pub.dev/packages/intl) to use this in a Flutter
+  /// app.
+  ///
+  /// *Known limitation:* Dart [DateTime] does not support time zones.
+  /// Therefore, the time zone portion of long times may be omitted when
+  /// formatting -- especially when using time format patterns with
+  /// [intl DateFormat](https://pub.dev/packages/intl) -- unless custom handling
+  /// of time zones is implemented.
+  ///
+  /// ## iOS Implementation
+  ///
+  /// The plugin gets date and number format patterns from iOS. On older
+  /// versions of iOS, the format patterns depend on the device's language
+  /// setting. iOS 16 and later add Date Format and Number Format preferences
+  /// to Language & Region, which allows the user to change the formats
+  /// independently of the language's defaults, including the separator
+  /// characters.
+  ///
+  /// ## Android Implementation
+  ///
+  /// Android date formats are based on the device's locale. However, fetching
+  /// the date format pattern is only possible in API 26 (Oreo) and later. The
+  /// plugin will do this on supported versions of Android. On older versions
+  /// of Android, the plugin falls back to standard patterns that should be
+  /// recognizable worldwide, such as 'yyyy-MM-dd' for the short date and
+  /// 'HH:mm' for the short time.
+  static Future<List<String>> getTimeFormatsList() async {
+    List<String> timeFormatsList =
+        await RegionSettingsPlatform.instance.getTimeFormatsList() ??
+            ['', '', ''];
+    return Future.value(timeFormatsList);
   }
 
   /// Get the number formats from device settings.

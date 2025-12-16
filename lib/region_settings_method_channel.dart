@@ -53,6 +53,14 @@ class MethodChannelRegionSettings extends RegionSettingsPlatform {
     return dateFormatsList;
   }
 
+  /// Returns a list of time format patterns as strings.
+  @override
+  Future<List<String>?> getTimeFormatsList() async {
+    final timeFormatsList =
+        await methodChannel.invokeListMethod<String>('getTimeFormatsList');
+    return timeFormatsList;
+  }
+
   /// Returns a list of number format patterns as strings.
   @override
   Future<List<String>?> getNumberFormatsList() async {

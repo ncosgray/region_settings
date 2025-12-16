@@ -37,6 +37,9 @@ class _MyAppState extends State<MyApp> {
   String? _dateFormatShort;
   String? _dateFormatMedium;
   String? _dateFormatLong;
+  String? _timeFormatShort;
+  String? _timeFormatMedium;
+  String? _timeFormatLong;
   String? _numberFormatInteger;
   String? _numberFormatDecimal;
 
@@ -56,6 +59,9 @@ class _MyAppState extends State<MyApp> {
     String dateFormatShort = regionSettings.dateFormat.short;
     String dateFormatMedium = regionSettings.dateFormat.medium;
     String dateFormatLong = regionSettings.dateFormat.long;
+    String timeFormatShort = regionSettings.timeFormat.short;
+    String timeFormatMedium = regionSettings.timeFormat.medium;
+    String timeFormatLong = regionSettings.timeFormat.long;
     String numberFormatInteger = regionSettings.numberFormat.integer;
     String numberFormatDecimal = regionSettings.numberFormat.decimal;
 
@@ -72,6 +78,9 @@ class _MyAppState extends State<MyApp> {
       _dateFormatShort = dateFormatShort;
       _dateFormatMedium = dateFormatMedium;
       _dateFormatLong = dateFormatLong;
+      _timeFormatShort = timeFormatShort;
+      _timeFormatMedium = timeFormatMedium;
+      _timeFormatLong = timeFormatLong;
       _numberFormatInteger = numberFormatInteger;
       _numberFormatDecimal = numberFormatDecimal;
     });
@@ -156,6 +165,45 @@ class _MyAppState extends State<MyApp> {
                       regionSettings.formatDate(
                         DateTime.now(),
                         dateStyle: DateStyle.long,
+                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('timeFormat.short:'),
+                    Text(
+                      '$_timeFormatShort',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('formatTime() as short:'),
+                    Text(
+                      regionSettings.formatTime(
+                        DateTime.now(),
+                        timeStyle: TimeStyle.short,
+                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('timeFormat.medium:'),
+                    Text(
+                      '$_timeFormatMedium',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('formatTime() as medium:'),
+                    Text(
+                      regionSettings.formatTime(
+                        DateTime.now(),
+                        timeStyle: TimeStyle.medium,
+                      ),
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('timeFormat.long:'),
+                    Text(
+                      '$_timeFormatLong',
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    const Text('formatTime() as long:'),
+                    Text(
+                      regionSettings.formatTime(
+                        DateTime.now(),
+                        timeStyle: TimeStyle.long,
                       ),
                       style: const TextStyle(fontWeight: FontWeight.bold),
                     ),
