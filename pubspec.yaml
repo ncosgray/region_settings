@@ -1,6 +1,6 @@
 name: region_settings
 description: A Flutter plugin to get device region settings such as measurement system, temperature units, and date/number formats.
-version: 1.4.1
+version: 1.5.0
 repository: https://github.com/ncosgray/region_settings
 issue_tracker: https://github.com/ncosgray/region_settings/issues
 topics:

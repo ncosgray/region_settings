@@ -1,3 +1,9 @@
+## 1.5.0
+
+* Add support for Time Format (`timeFormat.short`, `timeFormat.medium`, `timeFormat.long`) including a new `formatTime` formatter function.
+* Additional options implemented for `formatNumber`: trailing zeros and significant digits.
+* `forceLocale` parameter added to all formatter functions.
+
 ## 1.4.1
 
 * Improve compatibility with older Android compile SDK versions.
