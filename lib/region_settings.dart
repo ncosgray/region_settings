@@ -398,17 +398,17 @@ class RegionSettings {
     switch (timeStyle) {
       case TimeStyle.short:
         pattern = hasForcedLocale
-            ? DateFormat.Hm(forceLocale).pattern!
+            ? DateFormat.jm(forceLocale).pattern!
             : timeFormat.short;
         break;
       case TimeStyle.medium:
         pattern = hasForcedLocale
-            ? DateFormat.Hms(forceLocale).pattern!
+            ? DateFormat.jms(forceLocale).pattern!
             : timeFormat.medium;
         break;
       case TimeStyle.long:
         pattern = hasForcedLocale
-            ? "${DateFormat.Hms(forceLocale).pattern!} z"
+            ? "${DateFormat.jms(forceLocale).pattern!} z"
             : timeFormat.long;
         break;
     }
