@@ -12,7 +12,7 @@ A Flutter plugin to get device region settings such as measurement system, tempe
 
 To use this plugin, add `region_settings` as a [dependency in your pubspec.yaml file](https://flutter.dev/platform-plugins/).
 
-Call `RegionSettings` to access device region settings including temperature unit, measurement system, and date/number format preferences. The plugin also offers [Date and Number Formatters](#date-and-number-formatters).
+Call `RegionSettings` to access device region settings including temperature unit, measurement system, and date/time and number format preferences. The plugin also offers [Date, Number, and Time Formatters](#date-number-and-time-formatters).
 
 ```dart
 import 'package:region_settings/region_settings.dart';
@@ -99,7 +99,7 @@ The `numberFormat` values are the number formatting patterns used by the device'
 
 The three `timeFormat` values are the time formatting patterns used by the device's locale and/or region settings. For example, the UK English short time format is typically 'HH:mm' (24-hour time), while US English uses 'h:mm a' (12-hour time with AM/PM indicator). Note that these formats represent clock times rather than stopwatch times. Pass the time format pattern to a function like [intl DateFormat](https://pub.dev/packages/intl) to use this in a Flutter app. Or, use the `formatTime` convenience method provided by this plugin.
 
-## Date and Number Formatters
+## Date, Number, and Time Formatters
 
 #### formatDate
 
