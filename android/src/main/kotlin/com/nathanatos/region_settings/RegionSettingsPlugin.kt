@@ -14,6 +14,7 @@ package com.nathanatos.region_settings
 
 import android.content.Context
 import android.os.Build
+import androidx.core.os.ConfigurationCompat
 import androidx.core.text.util.LocalePreferences
 import io.flutter.embedding.engine.plugins.FlutterPlugin
 import io.flutter.plugin.common.MethodCall
@@ -81,12 +82,7 @@ class RegionSettingsPlugin: FlutterPlugin, MethodCallHandler {
 
   // Get the device locale
   private fun getLocale(): Locale {
-    val locale: Locale = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-      context.resources.configuration.locales.get(0)
-    } else {
-      context.resources.configuration.locale
-    }
-    return locale
+    return ConfigurationCompat.getLocales(context.resources.configuration)[0] ?: Locale.getDefault()
   }
 
   // Get the measurement system from device settings, or use locale default
