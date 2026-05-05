@@ -1,3 +1,9 @@
+## 1.5.1
+
+* iOS: Improved number format resolution for certain language and region combinations (e.g. Spanish + Brazil).
+* Android: Minor changes to avoid deprecation warnings.
+* Documentation updates.
+
 ## 1.5.0
 
 * Add support for Time Format (`timeFormat.short`, `timeFormat.medium`, `timeFormat.long`) including a new `formatTime` formatter function.
