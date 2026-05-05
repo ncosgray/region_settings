@@ -111,7 +111,7 @@ class RegionDateFormats {
 /// Time format styles enum.
 ///
 /// This enum defines three styles of time formats that can be used with
-/// [RegionSettings.formatDate] or [RegionTimeFormats]:
+/// [RegionSettings.formatTime] or [RegionTimeFormats]:
 /// * short
 /// * medium
 /// * long
@@ -315,12 +315,13 @@ class RegionSettings {
   /// Format a date using the regional settings.
   ///
   /// Returns the formatted [String] representation of a [DateTime] with the
-  /// plaform's locale and regional settings preferences applied. This is a
-  /// convenience method that uses the [intl DateFormat](https://pub.dev/packages/intl)
+  /// platform's locale and regional settings preferences applied, including any
+  /// custom settings chosen by the device user. This is a convenience method
+  /// that uses the [intl DateFormat](https://pub.dev/packages/intl)
   /// class to format the date without needing to manually specify the pattern.
   ///
   /// Before using this method, ensure that [getSettings] has been called to
-  /// load the plaform settings.
+  /// load the platform settings.
   ///
   /// If [forceLocale] is provided, the date will be formatted using that locale
   /// instead of the device's locale settings.
@@ -367,8 +368,9 @@ class RegionSettings {
   /// Format a time using the regional settings.
   ///
   /// Returns the formatted [String] representation of a [DateTime] with the
-  /// plaform's locale and regional settings preferences applied. This is a
-  /// convenience method that uses the [intl DateFormat](https://pub.dev/packages/intl)
+  /// platform's locale and regional settings preferences applied, including any
+  /// custom settings chosen by the device user. This is a convenience method
+  /// that uses the [intl DateFormat](https://pub.dev/packages/intl)
   /// class to format the time without needing to manually specify the pattern.
   ///
   /// *Known limitation:* Dart [DateTime] does not support time zones.
@@ -376,7 +378,7 @@ class RegionSettings {
   /// formatting.
   ///
   /// Before using this method, ensure that [getSettings] has been called to
-  /// load the plaform settings.
+  /// load the platform settings.
   ///
   /// If [forceLocale] is provided, the time will be formatted using that locale
   /// instead of the device's locale settings.
@@ -423,7 +425,8 @@ class RegionSettings {
   /// Format a number using the regional settings.
   ///
   /// Returns a formatted [String] representation of the number with the
-  /// plaform's regional settings preferences applied. Separator characters and
+  /// platform's regional settings preferences applied, including any custom
+  /// settings chosen by the device user. Separator characters and
   /// grouping styles are determined by the device's locale and region settings.
   ///
   /// If none of [decimalPlaces], [minimumFractionDigits], or
@@ -431,7 +434,7 @@ class RegionSettings {
   /// to locale defaults.
   ///
   /// Before using this method, ensure that [getSettings] has been called to
-  /// load the plaform settings.
+  /// load the platform settings.
   ///
   /// If [forceLocale] is provided, the number will be formatted using that
   /// locale instead of the device's locale settings.
@@ -716,11 +719,13 @@ class RegionSettings {
   /// setting. iOS 16 and later add Date Format and Number Format preferences
   /// to Language & Region, which allows the user to change the formats
   /// independently of the language's defaults, including the separator
-  /// characters.
+  /// characters. Such customizations are detected by this plugin and reflected
+  /// in the number format patterns.
   ///
   /// ## Android Implementation
   ///
-  /// Android date formats are based on the device's locale. However, fetching
+  /// Android date formats are based on the device's locale, and on some Android
+  /// versions, may be further customized by the device user. However, fetching
   /// the date format pattern is only possible in API 26 (Oreo) and later. The
   /// plugin will do this on supported versions of Android. On older versions
   /// of Android, the plugin falls back to standard patterns that should be
@@ -757,11 +762,13 @@ class RegionSettings {
   /// setting. iOS 16 and later add Date Format and Number Format preferences
   /// to Language & Region, which allows the user to change the formats
   /// independently of the language's defaults, including the separator
-  /// characters.
+  /// characters. Such customizations are detected by this plugin and reflected
+  /// in the number format patterns.
   ///
   /// ## Android Implementation
   ///
-  /// Android date formats are based on the device's locale. However, fetching
+  /// Android date formats are based on the device's locale, and on some Android
+  /// versions, may be further customized by the device user. However, fetching
   /// the date format pattern is only possible in API 26 (Oreo) and later. The
   /// plugin will do this on supported versions of Android. On older versions
   /// of Android, the plugin falls back to standard patterns that should be
@@ -793,7 +800,8 @@ class RegionSettings {
   /// setting. iOS 16 and later add Date Format and Number Format preferences
   /// to Language & Region, which allows the user to change the formats
   /// independently of the language's defaults, including the separator
-  /// characters.
+  /// characters. Such customizations are detected by this plugin and reflected
+  /// in the number format patterns.
   ///
   /// ## Android Implementation
   ///

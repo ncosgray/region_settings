@@ -190,8 +190,23 @@ public class RegionSettingsPlugin: NSObject, FlutterPlugin {
   private func getNumberFormatsList() -> [String] {
     let testNumber = NSNumber(value: 1111111.11)
     var numberFormatsList: [String] = []
+
+    // Set up formatter
     let formatter = NumberFormatter()
-    formatter.locale = Locale.autoupdatingCurrent
+    let hasCustomNumberFormat = UserDefaults.standard.object(forKey: "AppleICUNumberSymbols") != nil
+    if hasCustomNumberFormat {
+        // AppleICUNumberSymbols is an undocumented iOS key that is non-nil when the user has
+        // explicitly set a custom number format in Settings > General > Language & Region.
+        // When present, Locale.autoupdatingCurrent reflects the custom format correctly.
+        formatter.locale = Locale.autoupdatingCurrent
+    } else {
+        // When absent, we fall back to Locale.preferredLanguages to correctly resolve
+        // language/region combos that CLDR doesn't cover (e.g. Spanish + Brazil).
+        let localeIdentifier = Locale.preferredLanguages.first ?? Locale.current.identifier
+        formatter.locale = Locale(identifier: localeIdentifier)
+    }
+
+    // Generate patterns
     formatter.numberStyle  = .decimal
     formatter.minimumFractionDigits = 0
     formatter.maximumFractionDigits = 0

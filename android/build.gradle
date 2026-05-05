@@ -2,7 +2,7 @@ group 'com.nathanatos.region_settings'
 version '1.0-SNAPSHOT'
 
 buildscript {
-    ext.kotlin_version = '2.2.20'
+    ext.kotlin_version = '2.3.21'
     repositories {
         google()
         mavenCentral()
@@ -50,9 +50,9 @@ android {
     }
 
     dependencies {
-        implementation("androidx.core:core-ktx:1.13.1")
+        implementation("androidx.core:core-ktx:1.16.0")
         testImplementation 'org.jetbrains.kotlin:kotlin-test'
-        testImplementation 'org.mockito:mockito-core:5.0.0'
+        testImplementation 'org.mockito:mockito-core:5.14.0'
     }
 
     testOptions {
