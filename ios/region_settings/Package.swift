@@ -11,11 +11,15 @@ let package = Package(
     products: [
         .library(name: "region-settings", targets: ["region_settings"])
     ],
-    dependencies: [],
+    dependencies: [
+        .package(name: "FlutterFramework", path: "../FlutterFramework")
+    ],
     targets: [
         .target(
             name: "region_settings",
-            dependencies: [],
+            dependencies: [
+                .product(name: "FlutterFramework", package: "FlutterFramework")
+            ],
             resources: []
         )
     ]
