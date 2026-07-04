@@ -1,3 +1,7 @@
+## 1.5.2
+
+- Migrate to built-in Kotlin.
+
 ## 1.5.1
 
 * iOS: Improved number format resolution for certain language and region combinations (e.g. Spanish + Brazil).
