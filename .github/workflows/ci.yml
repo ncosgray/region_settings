@@ -1,0 +1,90 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  analyze:
+    name: Analyze and check formatting
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Verify formatting
+        run: dart format --output=none --set-exit-if-changed lib test
+      - name: Analyze plugin
+        run: flutter analyze
+      - name: Analyze example app
+        working-directory: example
+        run: |
+          flutter pub get
+          flutter analyze
+
+  test:
+    name: Unit tests (${{ matrix.device-locale }})
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        # Run the test suite under different system locales to exercise
+        # locale detection and intl initialization on non-English devices
+        device-locale: [en_US, fr_FR, de_DE]
+    env:
+      LANG: ${{ matrix.device-locale }}.UTF-8
+      LC_ALL: ${{ matrix.device-locale }}.UTF-8
+    steps:
+      - uses: actions/checkout@v4
+      - name: Generate system locale
+        run: |
+          sudo locale-gen ${{ matrix.device-locale }}.UTF-8
+          sudo update-locale
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Install dependencies
+        run: flutter pub get
+      - name: Run unit tests
+        run: flutter test
+
+  build-android:
+    name: Build example app (Android)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Build APK
+        working-directory: example
+        run: |
+          flutter pub get
+          flutter build apk --debug
+
+  build-ios:
+    name: Build example app (iOS)
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - name: Build iOS app
+        working-directory: example
+        run: |
+          flutter pub get
+          flutter build ios --debug --no-codesign

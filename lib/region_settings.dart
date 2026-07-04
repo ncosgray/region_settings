@@ -683,8 +683,9 @@ class RegionSettings {
   /// | | | | Zimbabwe |
   static Future<int> getFirstDayOfWeek() async {
     String firstDayOfWeek =
-        await RegionSettingsPlatform.instance.getFirstDayOfWeek() ?? '';
-    switch (firstDayOfWeek.toUpperCase().substring(0, 2)) {
+        (await RegionSettingsPlatform.instance.getFirstDayOfWeek() ?? '')
+            .toUpperCase();
+    switch (firstDayOfWeek.length < 2 ? '' : firstDayOfWeek.substring(0, 2)) {
       case 'TU':
         return DateTime.tuesday;
       case 'WE':
