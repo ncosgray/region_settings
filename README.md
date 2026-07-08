@@ -1,5 +1,10 @@
 # region_settings
 
+[![GitHub release (latest SemVer)](https://img.shields.io/github/v/release/ncosgray/region_settings?label=latest%20version&sort=semver)](https://github.com/ncosgray/region_settings/releases)
+[![GitHub issues](https://img.shields.io/github/issues/ncosgray/region_settings?color=red)](https://github.com/ncosgray/region_settings/issues)
+[![GitHub license](https://img.shields.io/github/license/ncosgray/region_settings?color=lightgrey)](https://github.com/ncosgray/region_settings/blob/master/LICENSE.txt)
+[![Tests](https://img.shields.io/github/actions/workflow/status/ncosgray/region_settings/ci.yml?branch=main&label=tests)](https://github.com/ncosgray/region_settings/actions/workflows/ci.yml)
+
 A Flutter plugin to get device region settings such as measurement system, temperature units, and date/number formats.
 
 ## Platform Support
